@@ -1,0 +1,57 @@
+-----------
+   Stats  |
+-----------
+Training room :
+nbPlayers
+nbEquipments
+
+Team :
+solidarity
+trainingRoomCapacity
+
+Player :
+exhaustion
+attitude
+selfTrust
+solidarityThreshold
+
+------------
+   Skills  |
+------------
+Player :
+puchline
+mime
+storyConstruction
+timeEllipsis
+
+Audience :
+vote
+applause
+
+----------------
+   Equipments  |
+----------------
+Team :
+timer
+whistle
+kazoo
+catchRing
+skatingRink
+voteCard
+puck
+controlRoom
+
+Player :
+shirt
+shoes
+tracksuit
+
+Consumables :
+chips
+fruit
+sandwich
+welsh
+water
+sirup
+soda
+beer
