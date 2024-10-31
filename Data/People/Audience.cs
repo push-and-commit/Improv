@@ -15,19 +15,17 @@ namespace Data.People
         private int _level;
         private int _quantity;
         private int _prize;
-        private int _winningPrize;
         private List<Skill> _skills;
 
         public Audience() { }
 
-        public Audience(string name, string description, int level, int quantity, int prize, int winningPrize)
+        public Audience(string name, string description, int level, int quantity, int prize)
         {
             _name = name;
             _description = description;
             _level = level;
             _quantity = quantity;
             _prize = prize;
-            _winningPrize = winningPrize;
             _skills = new List<Skill>();
         }
 
@@ -37,12 +35,6 @@ namespace Data.People
         public int Level { get => _level; set => _level = value; }
         public int Quantity { get => _quantity; set => _quantity = value; }
         public int Prize { get => _prize; set => _prize = value; }
-        public int WinningPrize { get => _winningPrize; set => _winningPrize = value; }
         public virtual List<Skill> Skills { get => _skills; set => _skills = value; }
-
-        public void useSkill(Skill skill)
-        {
-
-        }
     }
 }

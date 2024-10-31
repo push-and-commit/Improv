@@ -33,7 +33,7 @@ namespace GameEditor.Methods
             }
         }
 
-        private static int MainMenu()
+        public static int MainMenu()
         {
 
             string message = "Welcome to Improv, Game editor mode !\n" +
@@ -47,7 +47,7 @@ namespace GameEditor.Methods
             return userInput;
         }
 
-        private static void ListItemsMenu()
+        public static void ListItemsMenu()
         {
             string message = "Which item would you like to list ?\n" +
                 "0 - Audiences\n" +
@@ -97,7 +97,7 @@ namespace GameEditor.Methods
             }
         }
 
-        private static int AskForUserInputInt(string message, int[] args)
+        public static int AskForUserInputInt(string message, int[] args)
         {
             int userInput;
             bool isInputValid = false;
@@ -116,12 +116,12 @@ namespace GameEditor.Methods
             return userInput;
         }
 
-        private static void AddItemsMenu()
+        public static void AddItemsMenu()
         {
             throw new NotImplementedException();
         }
 
-        private static void RemoveItemsMenu()
+        public static void RemoveItemsMenu()
         {
             throw new NotImplementedException();
         }

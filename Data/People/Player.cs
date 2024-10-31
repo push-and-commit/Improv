@@ -41,10 +41,5 @@ namespace Data.People
             _team = null;
             team.Players.Remove(this);
         }
-
-        public void UseSkill(Skill skill)
-        {
-
-        }
     }
 }

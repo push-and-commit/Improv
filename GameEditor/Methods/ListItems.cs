@@ -25,10 +25,9 @@ namespace GameEditor.Methods
                         Console.WriteLine($"Name : {audience.Name}\n" +
                             $"Description : {audience.Description}\n" +
                             $"Number of people : {audience.Quantity}\n" +
-                            $"Prize : {audience.Prize}\n" +
-                            $"Prize if won : {audience.WinningPrize}");
+                            $"Prize : {audience.Prize}");
                     }
-                    Console.WriteLine(); // Separate each team with a carriage return
+                    Console.WriteLine(); // Separate each audience with a carriage return
                 }
                 else
                 {
