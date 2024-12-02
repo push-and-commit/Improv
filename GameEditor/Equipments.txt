@@ -26,7 +26,9 @@ timeEllipsis
 
 Audience :
 vote
-applause
+applause // buff
+boo // nerf
+nothing
 
 ----------------
    Equipments  |

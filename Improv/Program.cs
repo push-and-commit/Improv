@@ -2,6 +2,7 @@
 using Data.Store;
 using Data.People;
 using GameEditor;
+using Improv.Methods;
 
 namespace Improv
 {
@@ -9,7 +10,7 @@ namespace Improv
     {
         static void Main(string[] args)
         {
-            Improv.Methods.Game();
+            Game.StartGame();
         }
     }
 }

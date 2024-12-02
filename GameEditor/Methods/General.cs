@@ -1,6 +1,8 @@
 ﻿using Data.People;
 using Data.Store;
 using Data.Values;
+using Improv;
+using Improv.Methods;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -42,7 +44,7 @@ namespace GameEditor.Methods
                 "1 - Add an item\n" +
                 "2 - Remove an item\n" +
                 "3 - Quit the game";
-            int userInput = AskForUserInputInt(message, [0, 1, 2, 3]);
+            int userInput = Data.Methods.General.AskForUserInputInt(message, [0, 1, 2, 3]);
 
             return userInput;
         }
@@ -58,7 +60,7 @@ namespace GameEditor.Methods
                 "5 - Stats\n" +
                 "6 - Performances\n" +
                 "7 - Go back to the main menu";
-            int userInput = AskForUserInputInt(message, [0, 1, 2, 3, 4, 5, 6, 7]);
+            int userInput = Data.Methods.General.AskForUserInputInt(message, [0, 1, 2, 3, 4, 5, 6, 7]);
 
             switch (userInput)
             {
@@ -97,25 +99,6 @@ namespace GameEditor.Methods
             }
         }
 
-        public static int AskForUserInputInt(string message, int[] args)
-        {
-            int userInput;
-            bool isInputValid = false;
-            bool isInputANumber = false;
-            bool isInputAValidChoice = false;
-
-            Console.WriteLine(message);
-            do
-            {
-                Console.Write("My choice : ");
-                isInputANumber = int.TryParse(Console.ReadLine(), out userInput);
-                if (Array.IndexOf(args, userInput) != -1) isInputAValidChoice = true;
-                if (isInputANumber && isInputAValidChoice) isInputValid = true;
-            } while (!isInputValid);
-
-            return userInput;
-        }
-
         public static void AddItemsMenu()
         {
             throw new NotImplementedException();
@@ -130,13 +113,11 @@ namespace GameEditor.Methods
         {
             using (ConnectDB context = new ConnectDB())
             { // Connect to database
-
                 foreach (Equipment equip in equipmentArray)
                 {
                     context.equipments.Add(equip);
                 }
                 context.SaveChanges();
-
             }
 
         }
@@ -149,7 +130,6 @@ namespace GameEditor.Methods
 
                 context.SaveChanges();
             }
-
         }
 
         public static void ListEquipments()
@@ -161,10 +141,10 @@ namespace GameEditor.Methods
                     Console.WriteLine($"{equipment.Name} is a {equipment.Type} equipment\n" +
                         $"Its description is the following :\n" +
                         $"{equipment.Description}");
-                    Console.Write($"It costs {equipment.Price} golds and gives ");
+                    Console.Write($"It costs {equipment.Price} Improv Coins and gives ");
                     foreach (Stat stat in equipment.Stats)
                     {
-                        Console.Write($"{stat.Power} points of {stat.Name}");
+                        Console.Write($" {stat.Power} points of {stat.Name}");
                     }
                 }
             }
@@ -224,12 +204,20 @@ namespace GameEditor.Methods
             return games;
         }
 
-        public static void LoadGame(Team team)
+        public static Team LoadGame(string name)
         {
+            Team userTeam = null;
             using (ConnectDB context = new ConnectDB())
             { // Connect to database
-
+                foreach (Team team in context.teams)
+                {
+                    if (team.Name == name)
+                    {
+                        userTeam = team;
+                    }
+                }
             }
+            return userTeam;
         }
     }
 }
