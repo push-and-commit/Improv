@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using Data.Store;
 using Data.Values;
 using Data.People;
-using Data;
 
 namespace GameEditor
 {
@@ -32,5 +31,11 @@ namespace GameEditor
         public DbSet<Team> teams { get; set; }
         public DbSet<Audience> audiences { get; set; }
         public DbSet<Performance> performances { get; set; }
+        public DbSet<Store> stores { get; set; }
+        public DbSet<Inventory> inventories { get; set; }
+        public DbSet<TrainingRoom> trainingRooms { get; set; }
+        public DbSet<CostStat> costStats { get; set; }
+        public DbSet<Prize> prizes { get; set; }
+        public DbSet<PowerStat> powerStats { get; set; }
     }
 }

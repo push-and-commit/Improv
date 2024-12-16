@@ -25,7 +25,7 @@ storyConstruction
 timeEllipsis
 
 Audience :
-vote
+vote // match only
 applause // buff
 boo // nerf
 nothing

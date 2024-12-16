@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Data;
 using Data.People;
 
 namespace Data.Store
@@ -15,6 +14,8 @@ namespace Data.Store
         private string _description;
         private List<Equipment> _equipments;
         private TrainingRoom _trainingRoom;
+
+        public Store() { }
 
         public Store(string name, string description, List<Equipment> equipments, TrainingRoom trainingRoom)
         {

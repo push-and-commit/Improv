@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Data.Enums;
+using Data.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -7,28 +9,32 @@ using System.Threading.Tasks;
 
 namespace Data.Values
 {
-    public class Stat
+    public class Stat : IDisplay
     {
         private int _id;
         private string _name;
         private string _description;
-        private string _type;
-        private int _power;
+        private StatTypeEnum _type;
 
         public Stat() { }
 
-        public Stat(string name, string description, string type, int power)
+        public Stat(string name, string description, StatTypeEnum type)
         {
             _name = name;
             _description = description;
             _type = type;
-            Power = power;
         }
 
         public int Id { get => _id; set => _id = value; }
         public string Name { get => _name; set => _name = value; }
         public string Description { get => _description; set => _description = value; }
-        public string Type { get => _type; set => _type = value; }
-        public int Power { get => _power; set => _power = value; }
+        public StatTypeEnum Type { get => _type; set => _type = value; }
+
+        public void DisplaySelf()
+        {
+            Console.WriteLine($"Name : {_name}");
+            Console.WriteLine($"Description : {_description}");
+            Console.WriteLine($"Type : {_type}");
+        }
     }
 }

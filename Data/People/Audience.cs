@@ -1,4 +1,5 @@
-﻿using Data.Values;
+﻿using Data.Interfaces;
+using Data.Values;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,26 +8,26 @@ using System.Threading.Tasks;
 
 namespace Data.People
 {
-    public class Audience
+    public class Audience : IDisplay
     {
         private int _id;
         private string _name;
         private string _description;
         private int _level;
         private int _quantity;
-        private int _prize;
+        private Prize _prize;
         private List<Skill> _skills;
 
         public Audience() { }
 
-        public Audience(string name, string description, int level, int quantity, int prize)
+        public Audience(string name, string description, int level, int quantity, Prize prize, List<Skill> skills)
         {
             _name = name;
             _description = description;
             _level = level;
             _quantity = quantity;
             _prize = prize;
-            _skills = new List<Skill>();
+            _skills = skills;
         }
 
         public int Id { get => _id; set => _id = value; }
@@ -34,7 +35,21 @@ namespace Data.People
         public string Description { get => _description; set => _description = value; }
         public int Level { get => _level; set => _level = value; }
         public int Quantity { get => _quantity; set => _quantity = value; }
-        public int Prize { get => _prize; set => _prize = value; }
+        public virtual Prize Prize { get => _prize; set => _prize = value; }
         public virtual List<Skill> Skills { get => _skills; set => _skills = value; }
+
+        public void DisplaySelf()
+        {
+            Console.WriteLine($"Name : {_name}");
+            Console.WriteLine($"Description : {_description}");
+            Console.WriteLine($"Level : {_level}");
+            Console.WriteLine($"Number of people in the audience : {_quantity}");
+            Console.WriteLine($"Prize : {_prize.Money} Improv Coins and {_prize.Experience} points of experience");
+            Console.WriteLine($"Skills :");
+            foreach (Skill skill in _skills)
+            {
+                Console.WriteLine(skill.Name);
+            }
+        }
     }
 }

@@ -8,6 +8,7 @@ namespace GameEditor
     {
         static void Main(string[] args)
         {
+            // Methods.General.LoadDB();
             Methods.General.Game();
         }
     }

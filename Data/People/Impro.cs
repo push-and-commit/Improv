@@ -16,12 +16,12 @@ namespace Data.People
         private int _experience;
         private int _exeprienceToLevelUp;
         private List<Equipment> _equipments;
-        private List<Stat> _stats;
+        private List<PowerStat> _stats;
         private Inventory _inventory;
 
         public Impro() { }
 
-        public Impro(string name, int level, List<Equipment> equipments, List<Stat> stats, Inventory inventory)
+        public Impro(string name, int level, List<Equipment> equipments, List<PowerStat> stats, Inventory inventory)
         {
             _name = name;
             _level = level;
@@ -38,7 +38,7 @@ namespace Data.People
         public int Experience { get => _experience; set => _experience = value; }
         public int ExeprienceToLevelUp { get => _exeprienceToLevelUp; set => _exeprienceToLevelUp = value; }
         public virtual List<Equipment> Equipments { get => _equipments; set => _equipments = value; }
-        public virtual List<Stat> Stats { get => _stats; set => _stats = value; }
+        public virtual List<PowerStat> Stats { get => _stats; set => _stats = value; }
         public virtual Inventory Inventory { get => _inventory; set => _inventory = value; }
 
         public void AddEquipment(Equipment equipment)
