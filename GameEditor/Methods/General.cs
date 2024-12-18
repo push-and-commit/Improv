@@ -1,4 +1,5 @@
-﻿using Data.Enums;
+﻿using Data;
+using Data.Enums;
 using Data.People;
 using Data.Store;
 using Data.Values;
@@ -22,16 +23,16 @@ namespace GameEditor.Methods
             switch (userInput)
             {
                 case 0:
-                    ListItemsMenu();
+                    Console.WriteLine("Bye !");
                     break;
                 case 1:
-                    AddItemsMenu();
+                    ListItemsMenu();
                     break;
                 case 2:
-                    RemoveItemsMenu();
+                    AddItemsMenu();
                     break;
                 case 3:
-                    Console.WriteLine("Bye !");
+                    RemoveItemsMenu();
                     break;
             }
         }
@@ -41,10 +42,10 @@ namespace GameEditor.Methods
 
             string message = "Welcome to Improv, Game editor mode !\n" +
                 "Please choose an option in the following :\n" +
-                "0 - List items\n" +
-                "1 - Add an item\n" +
-                "2 - Remove an item\n" +
-                "3 - Quit the game";
+                "0 - Quit the game\n" +
+                "1 - List items\n" +
+                "2 - Add an item\n" +
+                "3 - Remove an item";
             int userInput = Data.Methods.General.AskForUserInputInt(message, 0, 3);
 
             return userInput;
@@ -53,48 +54,48 @@ namespace GameEditor.Methods
         public static void ListItemsMenu()
         {
             string message = "Which items would you like to list ?\n" +
-                "0 - Audiences\n" +
-                "1 - Teams\n" +
-                "2 - Players\n" +
-                "3 - Equipments\n" +
-                "4 - Skills\n" +
-                "5 - Stats\n" +
-                "6 - Performances\n" +
-                "7 - Go back to the main menu";
+                "1 - Go back to the main menu\n" +
+                "1 - Audiences\n" +
+                "2 - Teams\n" +
+                "3 - Players\n" +
+                "4 - Equipments\n" +
+                "5 - Skills\n" +
+                "6 - Stats\n" +
+                "7 - Performances";
             int userInput = Data.Methods.General.AskForUserInputInt(message, 0, 7);
 
             switch (userInput)
             {
                 case 0:
+                    Game();
+                    break;
+                case 1:
                     ListItems.Audiences();
                     ListItemsMenu();
                     break;
-                case 1:
+                case 2:
                     ListItems.Teams();
                     ListItemsMenu();
                     break;
-                case 2:
+                case 3:
                     ListItems.Players();
                     ListItemsMenu();
                     break;
-                case 3:
+                case 4:
                     ListItems.Equipments();
                     ListItemsMenu();
                     break;
-                case 4:
+                case 5:
                     ListItems.Skills();
                     ListItemsMenu();
                     break;
-                case 5:
+                case 6:
                     ListItems.Stats();
                     ListItemsMenu();
                     break;
-                case 6:
+                case 7:
                     ListItems.Performances();
                     ListItemsMenu();
-                    break;
-                case 7:
-                    Game();
                     break;
 
             }
@@ -103,48 +104,48 @@ namespace GameEditor.Methods
         public static void AddItemsMenu()
         {
             string message = "Which item would you like to add ?\n" +
-                "0 - Audience\n" +
-                "1 - Team\n" +
-                "2 - Player\n" +
-                "3 - Equipment\n" +
-                "4 - Skill\n" +
-                "5 - Stat\n" +
-                "6 - Performance\n" +
-                "7 - Go back to the main menu";
+                "0 - Go back to the main menu\n" +
+                "1 - Audience\n" +
+                "2 - Team\n" +
+                "3 - Player\n" +
+                "4 - Equipment\n" +
+                "5 - Skill\n" +
+                "6 - Stat\n" +
+                "7 - Performance";
             int userInput = Data.Methods.General.AskForUserInputInt(message, 0, 7);
 
             switch (userInput)
             {
                 case 0:
+                    Game();
+                    break;
+                case 1:
                     AddItems.Audiences();
                     AddItemsMenu();
                     break;
-                case 1:
+                case 2:
                     AddItems.Teams();
                     AddItemsMenu();
                     break;
-                case 2:
+                case 3:
                     AddItems.Players();
                     AddItemsMenu();
                     break;
-                case 3:
+                case 4:
                     AddItems.Equipments();
                     AddItemsMenu();
                     break;
-                case 4:
+                case 5:
                     AddItems.Skills();
                     AddItemsMenu();
                     break;
-                case 5:
+                case 6:
                     AddItems.Stats();
                     AddItemsMenu();
                     break;
-                case 6:
+                case 7:
                     AddItems.Performances();
                     AddItemsMenu();
-                    break;
-                case 7:
-                    Game();
                     break;
             }
         }
@@ -152,48 +153,48 @@ namespace GameEditor.Methods
         public static void RemoveItemsMenu()
         {
             string message = "Which item would you like to remove ?\n" +
-                "0 - Audience\n" +
-                "1 - Team\n" +
-                "2 - Player\n" +
-                "3 - Equipment\n" +
-                "4 - Skill\n" +
+                "0 - Go back to the main menu\n" +
+                "1 - Audience\n" +
+                "2 - Team\n" +
+                "3 - Player\n" +
+                "4 - Equipment\n" +
+                "5 - Skill\n" +
                 "5 - Stat\n" +
-                "6 - Performance\n" +
-                "7 - Go back to the main menu";
+                "7 - Performance ";
             int userInput = Data.Methods.General.AskForUserInputInt(message, 0, 7);
 
             switch (userInput)
             {
                 case 0:
+                    Game();
+                    break;
+                case 1:
                     RemoveItems.Audiences();
                     RemoveItemsMenu();
                     break;
-                case 1:
+                case 2:
                     RemoveItems.Teams();
                     RemoveItemsMenu();
                     break;
-                case 2:
+                case 3:
                     RemoveItems.Players();
                     RemoveItemsMenu();
                     break;
-                case 3:
+                case 4:
                     RemoveItems.Equipments();
                     RemoveItemsMenu();
                     break;
-                case 4:
+                case 5:
                     RemoveItems.Skills();
                     RemoveItemsMenu();
                     break;
-                case 5:
+                case 6:
                     RemoveItems.Stats();
                     RemoveItemsMenu();
                     break;
-                case 6:
+                case 7:
                     RemoveItems.Performances();
                     RemoveItemsMenu();
-                    break;
-                case 7:
-                    Game();
                     break;
             }
         }
@@ -219,13 +220,13 @@ namespace GameEditor.Methods
         public static Team CreateNewGame(string name, string slogan)
         {
             // New training room creation
-            TrainingRoom trainingRoom = AddItems.CreateTrainingRoom();
+            TrainingRoom trainingRoom = AddItems.CreateTrainingRoom(name);
 
             // New Inventory creation
             Inventory inventory = AddItems.CreateInventory();
 
             // New store creation
-            Store store = AddItems.CreateStore(name, trainingRoom);
+            Shop store = AddItems.CreateShop(name);
 
             // New team creation
             Team team = AddItems.CreateTeam(name, inventory, slogan, trainingRoom, TeamTypeEnum.Player);
@@ -236,7 +237,7 @@ namespace GameEditor.Methods
         public static List<Player> GetStarterPlayers()
         {
             List<Player> playerList = new List<Player>();
-            using(ConnectDB context = new ConnectDB())
+            using (ConnectDB context = new ConnectDB())
             {
                 foreach (Player player in context.players)
                 {
@@ -255,13 +256,16 @@ namespace GameEditor.Methods
 
             using (ConnectDB context = new ConnectDB())
             { // Add all games in the database to the dictionary
-                int cpt = 0;
-                foreach (Team team in context.teams)
+                if (context.teams.Count() > 0)
                 {
-                    if (team.Type == TeamTypeEnum.Player)
+                    int cpt = 1;
+                    foreach (Team team in context.teams)
                     {
-                        games.Add(cpt, team);
-                        cpt++;
+                        if (team.Type == TeamTypeEnum.Player)
+                        {
+                            games.Add(cpt, team);
+                            cpt++;
+                        }
                     }
                 }
             }
@@ -333,7 +337,7 @@ namespace GameEditor.Methods
                     userInput = -1;
                     Console.WriteLine(atLeastMessage);
                 }
-            } while (statList.Count() <= stats.Count && userInput != 0); 
+            } while (statList.Count() <= stats.Count && userInput != 0);
 
             return statList;
         }
@@ -418,152 +422,125 @@ namespace GameEditor.Methods
             return skillList;
         }
 
-
         public static void LoadDB()
         {
             using (ConnectDB context = new ConnectDB())
             {
-                // Team statistics
-                Stat nbPlayers = new Stat("Number of players", "Number of players the training room can hold", StatTypeEnum.TrainingRoom);
-                Stat solidarity = new Stat("Solidarity", "Team's solidarity", StatTypeEnum.Team);
-                Stat exhaustion = new Stat("Fatigue", "Player's fatigue", StatTypeEnum.Player);
-                context.stats.Add(nbPlayers);
+                // 1. Création des Stats
+                Stat solidarity = new Stat("Solidarity", "Team cohesion", StatTypeEnum.Team);
+                Stat fatigue = new Stat("Fatigue", "Player's fatigue", StatTypeEnum.Player);
+                Stat nbPlayers = new Stat("Number of Players", "Training room capacity", StatTypeEnum.TrainingRoom);
                 context.stats.Add(solidarity);
-                context.stats.Add(exhaustion);
+                context.stats.Add(fatigue);
+                context.stats.Add(nbPlayers);
                 context.SaveChanges();
 
-                nbPlayers = context.stats.FirstOrDefault(stat => stat.Name == "Number of players");
                 solidarity = context.stats.FirstOrDefault(stat => stat.Name == "Solidarity");
-                exhaustion = context.stats.FirstOrDefault(stat => stat.Name == "Fatigue");
+                fatigue = context.stats.FirstOrDefault(stat => stat.Name == "Fatigue");
+                nbPlayers = context.stats.FirstOrDefault(stat => stat.Name == "Number of Players");
 
-                List<Stat> statList = new List<Stat> { nbPlayers, solidarity, exhaustion };
-
-                // PowerStats
-                List<PowerStat> powerStatList = new List<PowerStat>();
-
-                // Prizes
-                Prize prize = new Prize(150, 150);
-                context.prizes.Add(prize);
+                // 2. Création des PowerStats
+                PowerStat teamSolidarity = new PowerStat(solidarity, "TeamStat", "Team", 25);
+                PowerStat playerFatigue = new PowerStat(fatigue, "PlayerStat", "Player", 15);
+                PowerStat trainingRoomCapacity = new PowerStat(nbPlayers, "TrainingRoom", "TrainingRoom", 15);
+                context.powerStats.Add(teamSolidarity);
+                context.powerStats.Add(playerFatigue);
+                context.powerStats.Add(trainingRoomCapacity);
                 context.SaveChanges();
 
-                prize = context.prizes.FirstOrDefault(prize => prize.Money == 150 && prize.Experience == 150);
+                teamSolidarity = context.powerStats.FirstOrDefault(powerStat => powerStat.Stat.Name == "Solidarity");
+                playerFatigue = context.powerStats.FirstOrDefault(powerStat => powerStat.Stat.Name == "Fatigue");
+                trainingRoomCapacity = context.powerStats.FirstOrDefault(powerStat => powerStat.Stat.Name == "Number of Players");
 
-                // Skill costs
-                CostStat costExhaustion = new CostStat(exhaustion, 1, exhaustion.Name, SkillTypeEnum.Player);
-                context.costStats.Add(costExhaustion);
+                // 3. Création des Prizes
+                Prize performancePrize = new Prize(200, 150);
+                context.prizes.Add(performancePrize);
                 context.SaveChanges();
 
-                costExhaustion = context.costStats.FirstOrDefault(costStat => costStat.Stat.Name == "Fatigue");
+                performancePrize = context.prizes.FirstOrDefault(prize => prize.Money == 200 && prize.Experience == 150);
 
-                List<CostStat> cost = new List<CostStat> { costExhaustion };
-
-                // Skills
-                Skill punchline = new Skill("Punchline", "A joke that triggers laughter", SkillTypeEnum.Player, 10, cost);
-                Skill applause = new Skill("Applause", "The audience applauds, increasing satisfaction", SkillTypeEnum.Audience, 10, cost);
+                // 4. Création des Skills
+                CostStat costPunchline = new CostStat(fatigue, 1, "Punchline", SkillTypeEnum.Player);
+                context.costStats.Add(costPunchline);
+                context.SaveChanges();
+                costPunchline = context.costStats.FirstOrDefault(costStat => costStat.Stat.Name == "Fatigue");
+                List<CostStat> playerCostStatList = new List<CostStat> { costPunchline };
+                List<CostStat> robotCostStatList = new List<CostStat>();
+                Skill punchline = new Skill("Punchline", "A joke that triggers laughter", SkillTypeEnum.Player, 10, playerCostStatList);
                 context.skills.Add(punchline);
+                context.SaveChanges();
+                punchline = context.skills.FirstOrDefault(skill => skill.Name == "Punchline");
+                Skill applause = new Skill("Applause", "Crowd applauding that causes confidence boost", SkillTypeEnum.Audience, 10, robotCostStatList);
                 context.skills.Add(applause);
                 context.SaveChanges();
-
-                punchline = context.skills.FirstOrDefault(skill => skill.Name == "Punchline");
                 applause = context.skills.FirstOrDefault(skill => skill.Name == "Applause");
 
-                List<Skill> playerSkillList = new List<Skill> { punchline };
-                List<Skill> audienceSkillList = new List<Skill> { applause };
-
-                // Training room
-                PowerStat powerNbPlayers = new PowerStat(nbPlayers, "Training Room", "TrainingRoom", 15);
-                context.powerStats.Add(powerNbPlayers);
+                // 5. Création des Equipments
+                List<PowerStat> EquipmentPowerStatList = new List<PowerStat> { playerFatigue };
+                Equipment vest = new Equipment("Vest", "Player's uniform", 0, EquipmentTypeEnum.Player, EquipmentPowerStatList, 1);
+                context.equipments.Add(vest);
                 context.SaveChanges();
-                powerNbPlayers = context.powerStats.FirstOrDefault(powerStat => powerStat.ObjectName == "Training Room" && powerStat.ObjectType == "TrainingRoom");
+                vest = context.equipments.FirstOrDefault(equipment => equipment.Name == "Vest");
 
-                List<PowerStat> trainingRoomPowerStatList = new List<PowerStat> { powerNbPlayers };
+                // 6. Création du Shop
+                List<Equipment> equipmentList = new List<Equipment> { vest };
+                Shop teamShop = new Shop("Improv Shop", "A shop for all improv needs", equipmentList);
+                context.shops.Add(teamShop);
+                context.SaveChanges();
+                teamShop = context.shops.FirstOrDefault(shop => shop.Name == "Improv Shop");
 
-                TrainingRoom trainingRoom = new TrainingRoom("Training Room", "Your first training room", 1, trainingRoomPowerStatList);
+                // 7. Création de l'Inventory
+                Inventory teamInventory = new Inventory(4);
+                teamInventory.Equipments = equipmentList;
+                Inventory playerInventory = new Inventory(5);
+                playerInventory.Equipments = equipmentList;
+                context.inventories.Add(teamInventory);
+                context.inventories.Add(playerInventory);
+                context.SaveChanges();
+
+                teamInventory = context.inventories.FirstOrDefault(inventory => inventory.NbItemsMax == 4);
+                playerInventory = context.inventories.FirstOrDefault(inventory => inventory.NbItemsMax == 5);
+
+                // 8. Création de la TrainingRoom
+                List<PowerStat> trainingRoomPowerStatList = new List<PowerStat> { trainingRoomCapacity };
+                TrainingRoom trainingRoom = new TrainingRoom("Basic Training Room", "A place to train your team", 1, trainingRoomPowerStatList, teamShop);
                 context.trainingRooms.Add(trainingRoom);
                 context.SaveChanges();
+                trainingRoom = context.trainingRooms.FirstOrDefault(trainingRomm => trainingRoom.Name == "Basic Training Room");
 
-                trainingRoom = context.trainingRooms.FirstOrDefault(trainingRoom => trainingRoom.Name == "Training Room");
-
-                // Equipments
-                PowerStat powerEquipment = new PowerStat(exhaustion, "Timer", "Equipment", 15);
-                context.powerStats.Add(powerEquipment);
+                // 9. Création de l'Équipe
+                List<PowerStat> teamPowerStatList = new List<PowerStat> { teamSolidarity };
+                List<Player> playerList = new List<Player>();
+                Team improvTeam = new Team("Improv Team", 1, equipmentList, teamPowerStatList, teamInventory, "Improvise and conquer!", 1500, trainingRoom, TeamTypeEnum.Player);
+                context.teams.Add(improvTeam);
                 context.SaveChanges();
-                powerEquipment = context.powerStats.FirstOrDefault(powerStat => powerStat.ObjectName == "Training Room" && powerStat.ObjectType == "TrainingRoom");
+                improvTeam = context.teams.FirstOrDefault(team => team.Name == "Improv Team");
 
-                List<PowerStat> equipmentPowerStatList = new List<PowerStat> { powerEquipment };
-                Equipment timer = new Equipment("Timer", "Timer to manage performances", 1, EquipmentTypeEnum.Team, equipmentPowerStatList, 1);
-                Equipment shirt = new Equipment("Vest", "Player's uniform", 0, EquipmentTypeEnum.Player, equipmentPowerStatList, 1);
-                Equipment fruit = new Equipment("Fruit", "Healthy snack to maintain energy", 1, EquipmentTypeEnum.Consumable, equipmentPowerStatList, 1);
-                context.equipments.Add(timer);
-                context.equipments.Add(shirt);
-                context.equipments.Add(fruit);
-                context.SaveChanges();
-
-                timer = context.equipments.FirstOrDefault(equipment => equipment.Name == "Timer");
-                shirt = context.equipments.FirstOrDefault(equipment => equipment.Name == "Vest");
-                fruit = context.equipments.FirstOrDefault(equipment => equipment.Name == "Fruit");
-
-                List<Equipment> equipmentList = new List<Equipment> { timer, shirt, fruit };
-
-                // Store
-                Store store = new Store("Store", "Your first store", equipmentList, trainingRoom);
-                context.stores.Add(store);
-                context.SaveChanges();
-
-                store = context.stores.FirstOrDefault(store => store.Name == "Store");
-
-                // Inventory
-                Inventory inventory = new Inventory(1);
-                context.inventories.Add(inventory);
-                context.SaveChanges();
-
-                inventory = context.inventories.FirstOrDefault(inventory => inventory.NbItemsMax == 1);
-
-                // Team
-                PowerStat powerSolidarity = new PowerStat(solidarity, "Improv", "Team", 25);
-                context.powerStats.Add(powerSolidarity);
-                context.SaveChanges();
-                powerSolidarity = context.powerStats.FirstOrDefault(powerStat => powerStat.ObjectName == "Improv" && powerStat.ObjectType == "Team");
-
-                List<PowerStat> teamPowerStatList = new List<PowerStat> { powerSolidarity };
-
-                Team team = new Team("Improv", 1, equipmentList, teamPowerStatList, inventory, "Improvisation forever", 1500, trainingRoom, TeamTypeEnum.Player);
-                context.teams.Add(team);
-                context.SaveChanges();
-
-                team = context.teams.FirstOrDefault(team => team.Name == "Improv");
-
-                // Player
-                PowerStat powerExhaustion = new PowerStat(exhaustion, "Oliver", "Player", 15);
-                context.powerStats.Add(powerExhaustion);
-                context.SaveChanges();
-                powerExhaustion = context.powerStats.FirstOrDefault(powerStat => powerStat.ObjectName == "Oliver" && powerStat.ObjectType == "Player");
-
-                List<PowerStat> playerPowerStatList = new List<PowerStat> { powerExhaustion };
-
-                Player player = new Player("Oliver", 1, equipmentList, playerPowerStatList, inventory, 20, team, PlayerTypeEnum.Starter);
+                // 10. Création du Player
+                List<Skill> playerSkillList = new List<Skill> { punchline };
+                List<PowerStat> playerPowerStatList = new List<PowerStat> { playerFatigue };
+                Player player = new Player("Oliver", 1, equipmentList, playerPowerStatList, playerInventory, 20, improvTeam, PlayerTypeEnum.Starter, true);
+                player.Skills = playerSkillList;
                 context.players.Add(player);
                 context.SaveChanges();
-
                 player = context.players.FirstOrDefault(player => player.Name == "Oliver");
 
-                // Audience
-                Audience audience = new Audience("Paris", "The largest audience in France", 1, 10, prize, audienceSkillList);
-                context.audiences.Add(audience);
+                // 11. Création de l'Audience
+                List<Skill> audienceSkillList = new List<Skill> { applause };
+                Audience parisAudience = new Audience("Paris Audience", "The largest audience in France", 1, 50, performancePrize, audienceSkillList);
+                context.audiences.Add(parisAudience);
                 context.SaveChanges();
+                parisAudience = context.audiences.FirstOrDefault(audience => audience.Name == "Paris Audience");
 
-                audience = context.audiences.FirstOrDefault(audience => audience.Name == "Paris");
-
-                // Performance
-                Performance performance = new Performance("Performance", "A basic performance", 10, 4, PerformanceTypeEnum.Catch, prize, equipmentList);
-                context.performances.Add(performance);
+                // 12. Création de la Performance
+                List<Equipment> performanceEquipmentList = new List<Equipment> { vest };
+                Performance improvPerformance = new Performance("Opening Night", "An exciting performance for all improv lovers", 5, 3, PerformanceTypeEnum.Match, performancePrize, performanceEquipmentList);
+                context.performances.Add(improvPerformance);
                 context.SaveChanges();
+                improvPerformance = context.performances.FirstOrDefault(performance => performance.Name == "Opening Night");
 
-                performance = context.performances.FirstOrDefault(performance => performance.Name == "Performance");
-
-                Console.WriteLine("Database successfully initialized.");
+                Console.WriteLine("Database successfully initialized with all entities.");
             }
         }
-
     }
 }

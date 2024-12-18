@@ -6,9 +6,14 @@ using System.Threading.Tasks;
 using Data.Store;
 using Data.People;
 using Data.Values;
+using Data.Methods;
 using Castle.DynamicProxy;
 using static System.Collections.Specialized.BitVector32;
 using GameEditor;
+using GameEditor.Methods;
+using System.Diagnostics;
+using System.Numerics;
+using Data.Enums;
 
 namespace Improv.Methods
 {
@@ -20,34 +25,40 @@ namespace Improv.Methods
             switch (userInput)
             {
                 case 0:
-                    InitializeNewGame();
+                    Console.WriteLine("Bye !");
                     break;
                 case 1:
+                    InitializeNewGame();
+                    break;
+                case 2:
                     Dictionary<int, Team> games = GameEditor.Methods.General.GetPlayerGames();
                     if (games.Count > 0)
                     {
-                        Console.WriteLine("Choose an existing game :");
+                        Console.WriteLine("0 - Back to main menu");
                         foreach (KeyValuePair<int, Team> game in games)
                         {
                             Console.WriteLine($"{game.Key} - {game.Value.Name}");
                         }
 
-                        userInput = Data.Methods.General.AskForUserInputInt("My choice :", 0, games.Count - 1);
+                        userInput = Data.Methods.General.AskForUserInputInt("Choose an existing game", 0, games.Count);
 
-                        Team gameToPlay = games.ElementAt(userInput).Value;
-                        GameEditor.Methods.General.LoadGame(gameToPlay.Name);
+                        if (userInput == 0)
+                        {
+                            StartGame();
+                        }
+                        else
+                        {
+                            Team gameToPlay = games.ElementAt(userInput).Value;
+                            GameEditor.Methods.General.LoadGame(gameToPlay.Name);
 
-                        // Next to do : launch home screen
-
+                            TrainingRoomMenu(gameToPlay);
+                        }
                     }
                     else
                     {
                         Console.WriteLine("There are no existing game\n");
                         StartGame();
                     }
-                    break;
-                case 2:
-                    Console.WriteLine("Bye !");
                     break;
             }
         }
@@ -58,9 +69,9 @@ namespace Improv.Methods
 
             string message = "Welcome to Improv !\n" +
                 "Do you wish to start a new game or to continue an existing one ?\n" +
-                "0 - New game\n" +
-                "1 - Load a game\n" +
-                "2 - Quit the game";
+                "0 - Quit the game\n" +
+                "1 - New game\n" +
+                "2 - Load a game";
             userInput = Data.Methods.General.AskForUserInputInt(message, 0, 2);
 
             return userInput;
@@ -78,30 +89,30 @@ namespace Improv.Methods
             do
             { // Define team's name
                 message = "What is the name of your team ?\n" +
-                    "My choice : ";
+                    "My choice";
                 name = Data.Methods.General.AskForUserInput(message);
-                if (CheckIfTeamNameAlreadyExists(name))
+                if (GameEditor.Methods.CheckItems.TeamNameAlreadyExists(name))
                 {
                     Console.WriteLine("This name is already taken. Please choose another one");
                 }
                 else
                 {
                     userInput = Data.Methods.General.AskForUserInputInt("Your name is " + name + "\nAre you sure ?" +
-                        "\n0 - Yes" +
-                        "\n1 - No", 0, 1);
-                    isValidatedName = userInput == 0 ? true : false;
+                        "\n0 - No" +
+                        "\n1 - Yes", 0, 1);
+                    isValidatedName = userInput == 1 ? true : false;
                 }
             } while (!isValidatedName);
 
             do
             { // Define team's moto
                 message = "What is the moto of your team ?\n" +
-                    "My choice : ";
+                    "My choice";
                 slogan = Data.Methods.General.AskForUserInput(message);
                 userInput = Data.Methods.General.AskForUserInputInt("Your moto is " + slogan + "\nAre you sure ?" +
-                    "\n0 - Yes" +
-                    "\n1 - No", 0, 1);
-                isValidatedSlogan = userInput == 0 ? true : false;
+                    "\n0 - No" +
+                    "\n1 - Yes", 0, 1);
+                isValidatedSlogan = userInput == 1 ? true : false;
             } while (!isValidatedSlogan);
 
             // Create new game in database
@@ -118,48 +129,469 @@ namespace Improv.Methods
             TrainingRoomTutorial(team);
 
             // Launch home screen
+            TrainingRoomMenu(team);
         }
+
+        public static void TrainingRoomMenu(Team team)
+        {
+            string message;
+            int userInput = -1;
+
+            message = $"Hello {team.Name} ! What would you like to do ?\n" +
+                $"0 - Quit the game\n" +
+                $"1 - Go to the shop\n" +
+                $"2 - Go on a performance\n" +
+                $"3 - Go back home";
+            userInput = Data.Methods.General.AskForUserInputInt(message, 0, 3);
+
+            switch (userInput)
+            {
+                case 0:
+                    Console.WriteLine($"Your journey with {team.Name} stops for now. Hope to see you soon !");
+                    StartGame();
+                    break;
+                case 1:
+                    ShopMenu(team);
+                    break;
+                case 2:
+                    PerformanceMenu(team);
+                    break;
+                case 3:
+                    GoBackHome(team);
+                    break;
+            }
+        }
+
+        /*///////////////////////////
+         * 
+         * Start Shop menus
+         * 
+         /////////////////////////*/
+
+        public static void ShopMenu(Team team)
+        {
+            Shop shop = GameEditor.Methods.GetItems.Shop(team);
+            string message;
+            int userInput = -1;
+
+            Console.WriteLine($"{shop.Name} !\n" +
+                $"{shop.Description}");
+
+            message = "What would you like to do ?\n" +
+                "0 - Back to Training room\n" +
+                "1 - Buy an equipment\n" +
+                "2 - Sell an equipment\n" +
+                "3 - Recruit a player\n" +
+                "4 - Sell a player\n" +
+                "5 - Upgrade your training room";
+            userInput = Data.Methods.General.AskForUserInputInt(message, 0, 5);
+            
+            switch (userInput)
+            {
+                case 0:
+                    Console.WriteLine("Thanks for stopping by ! Hope to see you soon !");
+                    TrainingRoomMenu(team);
+                    break;
+                case 1:
+                    BuyEquipmentMenu(team);
+                    break;
+                case 2:
+                    SellEquipmentMenu(team);
+                    break;
+                case 3:
+                    RecruitPlayerMenu(team);
+                    break;
+                case 4:
+                    SellPlayerMenu(team);
+                    break;
+                case 5:
+                    UpgradeTrainingRoomMenu(team);
+                    break;
+            }
+        }
+        
+        public static void BuyEquipmentMenu(Team team)
+        {
+            string message = "What would you like to buy ?\n" +
+                "0 - Back" +
+                "1 - Player equipment\n" +
+                "2 - Team equipment\n" +
+                "3 - Consumable";
+            int userInput = -1;
+            string equipmentType = "";
+
+            do
+            {
+                userInput = Data.Methods.General.AskForUserInputInt(message, 0, 3);
+                switch (userInput)
+                {
+                    case 0:
+                        ShopMenu(team);
+                        break;
+                    case 1:
+                        equipmentType = "Player";
+                        break;
+                    case 2:
+                        equipmentType = "Team";
+                        break;
+                    case 3:
+                        equipmentType = "Consumable";
+                        break;
+                }
+
+                BuyEquipments(team, equipmentType);
+            } while (userInput != 0);
+        }
+
+        public static void BuyEquipments(Team team, string equipmentType)
+        {
+            string message;
+            int userInput = -1;
+
+            team.Money = int.MaxValue;
+
+            do
+            {
+                Console.WriteLine("0 - Back to the shop");
+                Dictionary<int, Equipment> equipmentList = GameEditor.Methods.ListItems.ListEquipmentsType(equipmentType);
+
+                message = $"Your Improv Coins : {team.Money}";
+                userInput = Data.Methods.General.AskForUserInputInt(message , 0, equipmentList.Count);
+                if(team.Money >= equipmentList[userInput].Price)
+                {
+                    team.BuyEquipment(equipmentList[userInput]);
+                    Console.WriteLine($"Congrats ! You just bought {equipmentList[userInput].Name} !");
+                }
+                else
+                {
+                    Console.WriteLine($"You don't have enough Imprv Coins to buy {equipmentList[userInput].Name}. {equipmentList[userInput].Price} Improv Coins needed !");
+                }
+            } while (userInput != 0);
+
+        }
+
+        public static void SellEquipmentMenu(Team team)
+        {
+            string message;
+            int userInput = -1;
+
+            do
+            {
+                int cpt = 1;
+                Dictionary<int, Equipment> equipments = new Dictionary<int, Equipment>();
+                foreach (Equipment equipment in team.Equipments)
+                {
+                    equipments.Add(cpt, equipment);
+                    cpt++;
+                }
+                foreach (Equipment equipment in team.Inventory.Equipments)
+                {
+                    equipments.Add(cpt, equipment);
+                    cpt++;
+                }
+
+                if (equipments.Count > 0)
+                {
+                    Console.WriteLine("0 - Back to the shop");
+                    foreach (KeyValuePair<int, Equipment> equipment in equipments)
+                    {
+                        Console.WriteLine($"{equipment.Key} - {equipment.Value.Name}");
+                    }
+
+                    message = "Which item would you like to sell ?\n";
+                    userInput = Data.Methods.General.AskForUserInputInt(message, 0, equipments.Count);
+                    if (userInput != 0)
+                    {
+                        team.SellEquipment(equipments[userInput]);
+                        Console.WriteLine($"You earned {equipments[userInput].Price} Improv Coins");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("There are no items to sell. Feel free to buy some in the shop !");
+                    userInput = 0;
+                }
+            } while(userInput != 0);
+        }
+
+        public static void RecruitPlayerMenu(Team team)
+        {
+            string message;
+            int userInput = -1;
+            int cpt;
+            int price = 0;
+            List<Player> playerList = GameEditor.Methods.GetItems.GetDefaultPlayers();
+            Dictionary<int, Player> playerDictionary = new Dictionary<int, Player>();
+
+            if (playerList.Count > 0)
+            {
+                foreach (Player player in playerList)
+                {
+                    if (team.Players.Contains(player))
+                    {
+                        playerList.Remove(player);
+                    }
+                }
+
+                if (playerList.Count > 0)
+                {
+                    do
+                    {
+                        Console.WriteLine("0 - Back to shop");
+                        cpt = 1;
+                        foreach (Player player in playerList)
+                        {
+                            switch (player.Type)
+                            {
+                                case Data.Enums.PlayerTypeEnum.Starter:
+                                    price = 50;
+                                    break;
+                                case Data.Enums.PlayerTypeEnum.Common:
+                                    price = 300;
+                                    break;
+                                case Data.Enums.PlayerTypeEnum.Rare:
+                                    price = 1000;
+                                    break;
+                                case Data.Enums.PlayerTypeEnum.Epic:
+                                    price = 15000;
+                                    break;
+                            }
+                            playerDictionary.Add(cpt, player);
+                            Console.WriteLine($"{cpt} - {player.Name} | {price} Improv Coins");
+                        }
+
+                        message = "Choose a player to see their stats";
+                        userInput = Data.Methods.General.AskForUserInputInt(message, 0, playerList.Count);
+
+                        if (userInput != 0)
+                        {
+                            Player virtualPlayer = playerDictionary[userInput];
+                            virtualPlayer.DisplaySelf();
+
+                            message = "Would you like to recruit them ?\n" +
+                                "0 - No\n" +
+                                "1 - Yes";
+                            userInput = Data.Methods.General.AskForUserInputInt(message, 0, 1);
+                            if (userInput == 1 && team.Money >= price)
+                            {
+                                Player player = GameEditor.Methods.AddItems.CreatePlayer(virtualPlayer.Name, virtualPlayer.Level, virtualPlayer.Equipments, virtualPlayer.Stats, virtualPlayer.Inventory, virtualPlayer.Age, team, virtualPlayer.Type);
+                                team.Money -= price;
+                                Console.WriteLine($"Congrats ! You just recruited {player.Name} for {price} Improv Coins !");
+                            }
+                            else if (team.Money < price)
+                            {
+                                Console.WriteLine($"You don't have enough Improv Coins to recruit {virtualPlayer.Name}");
+                            }
+                        }
+
+                    } while (userInput != 0);
+                }
+            }
+        }
+
+        public static void SellPlayerMenu(Team team)
+        {
+            string message;
+            int userInput = -1;
+            int cpt = 1;
+            int price = 0;
+
+            do
+            {
+                Dictionary<int, Player> playerDictionary = new Dictionary<int, Player>();
+
+                Console.WriteLine("0 - Back to shop");
+                foreach (Player player in team.Players)
+                {
+                    Console.WriteLine($"{cpt} - {player.Name}");
+                    cpt++;
+                }
+
+                message = "Which player would you like to sell ?";
+                userInput = Data.Methods.General.AskForUserInputInt(message, 0, team.Players.Count);
+
+                if(userInput != 0)
+                {
+                    Dictionary<int, Player> player = new Dictionary<int, Player>();
+                    player.Add(0, playerDictionary[userInput]);
+                    switch (player.Values.ElementAt(0).Type)
+                    {
+                        case Data.Enums.PlayerTypeEnum.Starter:
+                            price = 30;
+                            break;
+                        case Data.Enums.PlayerTypeEnum.Common:
+                            price = 200;
+                            break;
+                        case Data.Enums.PlayerTypeEnum.Rare:
+                            price = 800;
+                            break;
+                        case Data.Enums.PlayerTypeEnum.Epic:
+                            price = 12000;
+                            break;
+                    }
+
+                    message = $"You are about to sell {player.Values.ElementAt(0).Name} for {price} Improv Coins\n" +
+                        $"Are you sure ?\n" +
+                        $"0 - No\n" +
+                        $"1 - Yes";
+                    userInput = Data.Methods.General.AskForUserInputInt(message, 0, 1);
+                    if(userInput == 1)
+                    {
+                        player.Values.ElementAt(0).leaveTeam(team);
+                        Console.WriteLine($"With regrets, {player.Values.ElementAt(0).Name} has left your team. You earned {price} Improv Coins.");
+                    }
+                }
+            } while (userInput != 0);
+        }
+
+        public static void UpgradeTrainingRoomMenu(Team team)
+        {
+            string message;
+            int userInput = -1;
+
+            message = "Would you like to upgrade your Training room ?\n" +
+                "0 - No\n" +
+                "1 - Yes";
+            userInput = Data.Methods.General.AskForUserInputInt(message, 0, 1);
+            int price = 5000 * team.TrainingRoom.Level;
+
+            if (userInput == 1 && team.Money >= price)
+            {
+                team.TrainingRoom.LevelUp();
+            }
+            else if (team.Money < price)
+            {
+                Console.WriteLine("You don't have enough Improv Coins to upgrade your Training room");
+            }
+        }
+
+        /*///////////////////////////
+         * 
+         * End Shop menus
+         * 
+         /////////////////////////*/
+
+        /*///////////////////////////
+         * 
+         * Start Performance menus
+         * 
+         /////////////////////////*/
+         
+        public static void PerformanceMenu(Team team)
+        {
+            string message;
+            int userInput = -1;
+            int cpt = 1;
+            Dictionary<int, string> performanceTypes = new Dictionary<int, string>();
+
+            Console.WriteLine("0 - Back");
+            foreach(string name in Enum.GetNames(typeof(PerformanceTypeEnum))){
+                performanceTypes.Add(cpt, Data.Methods.General.AddSpaceBeforeUppercase(name));
+                Console.WriteLine($"{cpt} - {name}");
+                cpt++;
+            }
+            message = "Which performance would you like to do ?";
+            userInput = Data.Methods.General.AskForUserInputInt(message, 0, Enum.GetNames(typeof(PerformanceTypeEnum)).Count());
+
+            if (userInput != 0)
+            {
+                string name = Data.Methods.General.RemoveSpaces(performanceTypes[userInput]);
+                if (Enum.GetNames(typeof(PerformanceTypeEnum)).Contains(name))
+                {
+                    // Next to code : Performance menus with "string name"
+                }
+            }
+            else
+            {
+                Console.WriteLine("Hope to see you again soon !");
+                TrainingRoomMenu(team);
+            }
+        }
+
+        /*///////////////////////////
+         * 
+         * End Performance menus
+         * 
+         /////////////////////////*/
+
+        /*///////////////////////////
+         * 
+         * Start Go back home menus
+         * 
+         /////////////////////////*/
+
+        public static void GoBackHome(Team team)
+        {
+            string message;
+            int userInput = -1;
+
+            foreach (Player player in team.Players)
+            {
+                player.Stats.FirstOrDefault(powerStat => powerStat.Stat.Name == "Fatigue").Power = 100;
+            }
+
+            Console.WriteLine("Your players are now well rested !");
+        }
+
+        /*///////////////////////////
+         * 
+         * End Go back home menus
+         * 
+         /////////////////////////*/
+
+        /*///////////////////////////
+         * 
+         * Start Tutorials
+         * 
+         /////////////////////////*/
 
         private static void TrainingRoomTutorial(Team team)
         {
-            Console.WriteLine("This is your training room ! This will be your place and your safe space\n" +
+            Console.WriteLine("This is your training room ! This will be your place and your safe space :)\n" +
                 "Here, you will be able to do many things.\n" +
-                "Number one : Use the store. Recruit new players, buy new equipments, sell them if needed, upgrade your training room.\n" +
-                "One thing's for sure, you need Improv Coins to do that ! As you are new in this economy and it seems to me that you are a good person, I will give you 1500 Improv Coins");
+                "Number one : Use the shop. Recruit new players, buy new equipments, sell them if needed, upgrade your training room.\n" +
+                "One thing's for sure, you need Improv Coins to do that ! As you are new in this economy and it seems to me that you are the future of improvisation, I will make a small gift to help you start your journey here");
+            Console.WriteLine("You earned 1500 Improv Coins");
             Console.WriteLine("Hey ! I just thought about this, but you don't have any players yet, right ? I have just the right people for you !\n" +
                 "A group of friends started improvisation recently and are looking to join a team !");
 
-            // Start store tutorial
-            StoreTutorial(team);
+            // Start shop tutorial
+            ShopTutorial(team);
 
             Console.WriteLine("Here, you can also go on a performance with your team !");
             // Start performance tutorial
             PerformanceTutorial(team);
 
             Console.WriteLine("After such a long day and great perforamnces, both your player and yourself need a well deserved rest, you can go back home !");
-            // Start back to home tutorial
-            GoingBackHomeTutorial(team);
+            // Start go back home tutorial
+            GoBackHomeTutorial(team);
         }
 
-        private static void StoreTutorial(Team team)
-        {
-            string message = "";
-            int userInput = Data.Methods.General.AskForUserInputInt(message, 0, 0);
-        }
-
-        private static void PerformanceTutorial(Team team)
+        private static void ShopTutorial(Team team)
         {
             string message = "";
             int userInput = Data.Methods.General.AskForUserInputInt(message, 1, 1);
         }
 
-        private static void GoingBackHomeTutorial(Team team)
+        private static void PerformanceTutorial(Team team)
         {
             string message = "";
             int userInput = Data.Methods.General.AskForUserInputInt(message, 2, 2);
         }
 
-        public static void InitializeStore(Team team)
+        private static void GoBackHomeTutorial(Team team)
+        {
+            string message = "";
+            int userInput = Data.Methods.General.AskForUserInputInt(message, 3, 3);
+        }
+
+        /*///////////////////////////
+         * 
+         * End Tutorials
+         * 
+         /////////////////////////*/
+
+        public static void InitializeShop(Team team)
         {
             GameEditor.Methods.General.ListEquipments();
         }
@@ -323,21 +755,6 @@ namespace Improv.Methods
             userInput = Data.Methods.General.AskForUserInputInt(message, 0, player.Skills.Count - 1);
             return player.Skills.ElementAt(userInput);
         }
-
-
-        public static bool CheckIfTeamNameAlreadyExists(string name)
-        {
-            bool result = false;
-            using (ConnectDB context = new ConnectDB()) {
-                if (context.teams.FirstOrDefault(team => team.Name == name) != null)
-                {
-                    result = true;
-                }
-            }
-            return result;
-        }
-
-
 
 
 

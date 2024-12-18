@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
@@ -13,6 +15,7 @@ namespace Data.Store
 {
     public class Equipment : IDisplay
     {
+        [Key]
         private int _id;
         private string _name;
         private string _description;

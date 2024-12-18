@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,12 +14,15 @@ namespace Data.People
 {
     public class Performance : IDisplay
     {
+        [Key]
         private int _id;
         private string _name;
         private string _description;
         private int _duration;
         private int _nbPlayers;
         private PerformanceTypeEnum _type;
+        private int _prizeId;
+        [ForeignKey("PrizeId")]
         private Prize _prize;
         private List<Equipment> _equipmentNeeded;
 
@@ -32,6 +37,8 @@ namespace Data.People
             _type = type;
             _prize = prize;
             _equipmentNeeded = equipmentNeeded;
+
+            _prizeId = prize.Id;
         }
 
         public int Id { get => _id; set => _id = value; }
@@ -40,6 +47,7 @@ namespace Data.People
         public int Duration { get => _duration; set => _duration = value; }
         public int NbPlayers { get => _nbPlayers; set => _nbPlayers = value; }
         public virtual PerformanceTypeEnum Type { get => _type; set => _type = value; }
+        public virtual int PrizeId { get => _prizeId; set => _prizeId = value; }
         public virtual Prize Prize { get => _prize; set => _prize = value; }
         public virtual List<Equipment> EquipmentNeeded { get => _equipmentNeeded; set => _equipmentNeeded = value; }
 

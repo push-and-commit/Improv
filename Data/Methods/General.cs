@@ -86,7 +86,7 @@ namespace Data.Methods
                 case "Performance":
                     Console.WriteLine($"0 - {PerformanceTypeEnum.Match}");
                     Console.WriteLine($"1 - {PerformanceTypeEnum.Catch}");
-                    Console.WriteLine($"2 - {PerformanceTypeEnum.StandUp}");
+                    Console.WriteLine($"2 - {PerformanceTypeEnum.Solo}");
                     Console.WriteLine($"3 - {PerformanceTypeEnum.LongForm}");
                     userInput = AskForUserInputInt(message, 0, 3);
                     break;
@@ -104,6 +104,45 @@ namespace Data.Methods
             }
 
             return userInput;
+        }
+
+        public static string AddSpaceBeforeUppercase(string input)
+        {
+            string result = "";
+
+            if (!string.IsNullOrEmpty(input))
+            {
+                result.Append(input[0]);
+                for (int i = 1; i < input.Length; i++)
+                {
+                    if (char.IsUpper(input[i]))
+                    {
+                        result.Append(' ');
+                    }
+                    result.Append(input[i]);
+                }
+            }
+
+            return result.ToString();
+        }
+
+        public static string RemoveSpaces(string input)
+        {
+            string result = "";
+
+            if (!string.IsNullOrEmpty(input))
+            {
+                result.Append(input[0]);
+                for (int i = 0; i < input.Length; i++)
+                {
+                    if (input[i] != ' ')
+                    {
+                        result.Append(input[i]);
+                    }
+                }
+            }
+
+            return result;
         }
     }
 }

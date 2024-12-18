@@ -4,13 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Data.Enums
+namespace Data.Interfaces
 {
-    public enum PerformanceTypeEnum
+    public interface ILevel
     {
-        Match,
-        Catch,
-        LongForm,
-        Solo
+        public void LevelUp();
     }
 }

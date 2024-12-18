@@ -8,44 +8,74 @@ using Data.Enums;
 using Data.Interfaces;
 using Data.Store;
 using Data.Values;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Data.People
 {
     public class Player : Impro, IDisplay
     {
-        int _age;
-        List<Skill> _skills;
-        Team _team;
-        PlayerTypeEnum _type;
+        [Key]
+        private int _id;
+        private int _age;
+        private List<Skill> _skills;
+        private int _teamId;
+        [ForeignKey("TeamId")]
+        private Team _team;
+        private PlayerTypeEnum _type;
+        private bool _isDefault;
 
         public Player() { }
 
-        public Player(string name, int level, List<Equipment> equipments, List<PowerStat> stats, Inventory inventory, int age, Team team, PlayerTypeEnum type) : base(name, level, equipments, stats, inventory)
+        public Player(string name, int level, List<Equipment> equipments, List<PowerStat> stats, Inventory inventory, int age, Team team, PlayerTypeEnum type, bool isDefault) : base(name, level, equipments, stats, inventory)
         {
             _age = age;
             _skills = new List<Skill>();
             _team = team;
             _type = type;
+            _isDefault = isDefault;
+
+            _teamId = team.Id;
         }
 
+        public int Id { get => _id; set => _id = value; }
         public int Age { get => _age; set => _age = value; }
         public virtual List<Skill> Skills { get => _skills; set => _skills = value; }
+        public virtual int TeamId { get => _teamId; set => _teamId = value; }
         public virtual Team Team { get => _team; set => _team = value; }
         public PlayerTypeEnum Type { get => _type; set => _type = value; }
+        public bool IsDefault { get => _isDefault; set => _isDefault = value; }
 
         public void DisplaySelf()
         {
             Console.WriteLine($"Name : {this.Name}");
             Console.WriteLine($"Level : {this.Level}");
-            Console.WriteLine($"Equipments : ");
-            foreach (Equipment equipment in this.Equipments)
-            {
-                Console.WriteLine(equipment.Name);
-            }
             Console.WriteLine("Stats :");
             foreach (PowerStat stat in this.Stats)
             {
                 Console.WriteLine($"{stat.Power} points of {stat.Stat.Name} ");
+            }
+            Console.WriteLine("Skills :");
+            foreach(Skill skill in this.Skills)
+            {
+                Console.WriteLine($"Name : {skill.Name}");
+                if (skill.Cost.Count > 0)
+                {
+                    Console.WriteLine("Stats required to use :");
+                    foreach (CostStat cost in skill.Cost)
+                    {
+                        Console.WriteLine($"{cost.Cost} points of {cost.Stat.Name}");
+                    }
+                }
+                Console.WriteLine();
+            }
+            if (this.Equipments.Count > 0)
+            {
+                Console.WriteLine($"Equipments : ");
+                foreach (Equipment equipment in this.Equipments)
+                {
+                    Console.WriteLine(equipment.Name);
+                }
             }
             Console.WriteLine($"Inventory :");
             this.Inventory.DisplaySelf();

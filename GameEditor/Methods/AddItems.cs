@@ -65,11 +65,11 @@ namespace GameEditor.Methods
                     Console.WriteLine($"You are about to create a new audience with the following parameters :");
                     audience.DisplaySelf();
                     message = "Are you sure ?\n" +
-                        "0 - Yes\n" +
-                        "1 - No";
+                        "0 - No\n" +
+                        "1 - Yes";
                     userInput = Data.Methods.General.AskForUserInputInt(message, 0, 1);
 
-                    if (userInput == 0)
+                    if (userInput == 1)
                     { // Add audience to db
                         context.audiences.Add(audience);
                         context.SaveChanges();
@@ -164,7 +164,7 @@ namespace GameEditor.Methods
                     }
 
                     // Create Team
-                    TrainingRoom trainingRoom = CreateTrainingRoom();
+                    TrainingRoom trainingRoom = CreateTrainingRoom(name);
                     Team team = new Team(impro.Name, impro.Level, impro.Equipments, impro.Stats, impro.Inventory, slogan, money, trainingRoom, type);
                     team.Players = players;
 
@@ -172,11 +172,11 @@ namespace GameEditor.Methods
                     Console.WriteLine("You are about to create a new Team. Are you sure ?");
                     team.DisplaySelf();
                     message = "Are you sure ?\n" +
-                        "0 - Yes\n" +
-                        "1 - No";
+                        "0 - No\n" +
+                        "1 - Yes";
                     userInput = Data.Methods.General.AskForUserInputInt(message, 0, 1);
 
-                    if (userInput == 0)
+                    if (userInput == 1)
                     {// Add Team to db
                         context.teams.Add(team);
                         context.SaveChanges();
@@ -251,10 +251,10 @@ namespace GameEditor.Methods
 
                     Team team;
                     message = $"Will {impro.Name} belong to a Team ?\n" +
-                        $"0 - Yes\n" +
-                        $"1 - No";
+                        $"0 - No\n" +
+                        $"1 - Yes";
                     userInput = Data.Methods.General.AskForUserInputInt(message, 0, 1);
-                    if (userInput == 0)
+                    if (userInput == 1)
                     {
                         Dictionary<int, Team> teams = new Dictionary<int, Team>();
                         teams = ListItems.ListTeams(context);
@@ -286,22 +286,17 @@ namespace GameEditor.Methods
                     }
 
                     // Create Player
-                    Player player = new Player(impro.Name, impro.Level, impro.Equipments, impro.Stats, impro.Inventory, age, team, type);
-                    // Player player = new Player(impro, age); Why doesn't it work ?
+                    Player player = new Player(impro.Name, impro.Level, impro.Equipments, impro.Stats, impro.Inventory, age, team, type, false);
                     player.Skills = skills;
-                    if (userInput != 1)
-                    {
-                        player.Team = team;
-                    }
 
                     // Verify entries
                     Console.WriteLine("You are about to create a Player with the following parmeters");
                     player.DisplaySelf();
                     message = "Are you sure ?\n" +
-                        "0 - Yes\n" +
-                        "1 - No";
+                        "0 - No\n" +
+                        "1 - Yes";
                     userInput = Data.Methods.General.AskForUserInputInt(message, 0, 1);
-                    if (userInput == 0)
+                    if (userInput == 1)
                     { // Add Player to db
                         context.players.Add(player);
                         Console.WriteLine("Well done ! You created a new Player");
@@ -362,6 +357,7 @@ namespace GameEditor.Methods
 
                     int askType = -1;
                     EquipmentTypeEnum type = EquipmentTypeEnum.Consumable;
+                    askType = Data.Methods.General.AskForUserInputEnum("Which type is the Equipment", "Equipment");
                     switch (askType)
                     {
                         case 0:
@@ -386,11 +382,11 @@ namespace GameEditor.Methods
                     Console.WriteLine("You are about to create a new Equipment with the following parameters :");
                     equipment.DisplaySelf();
                     message = ("Are you sure ?\n" +
-                        "0 - Yes\n" +
-                        "1 - No");
+                        "0 - No\n" +
+                        "1 - Yes");
                     userInput = Data.Methods.General.AskForUserInputInt(message, 0, 1);
 
-                    if (userInput == 0)
+                    if (userInput == 1)
                     { // Add the equipment to db
                         context.equipments.Add(equipment);
                         context.SaveChanges();
@@ -448,6 +444,7 @@ namespace GameEditor.Methods
 
                 int askType = -1;
                 SkillTypeEnum type = SkillTypeEnum.Audience;
+                askType = Data.Methods.General.AskForUserInputEnum("Which type is the Skill ?", "Skill");
                 switch (askType)
                 {
                     case 0:
@@ -485,10 +482,10 @@ namespace GameEditor.Methods
                 {
                     Console.WriteLine("There are no stats in the database yet. It is not mandatory to create a Skill, but you may want to add some to require one to use your Skill");
                     message = "Would you like to create one ?\n" +
-                        "0 - Yes" +
-                        "1 - No";
+                        "0 - No" +
+                        "1 - Yes";
                     userInput = Data.Methods.General.AskForUserInputInt(message, 0, 1);
-                    if (userInput == 0) {
+                    if (userInput == 1) {
                         Stats();
                     }
                 }
@@ -506,12 +503,12 @@ namespace GameEditor.Methods
                     }
                 }
                 message = ("Are you sure ?\n" +
-                    "0 - Yes\n" +
-                    "1 - No");
+                    "0 - No\n" +
+                    "1 - Yes");
                 userInput = Data.Methods.General.AskForUserInputInt(message, 0, 1);
 
                 // Add the skill to db
-                if (userInput == 0)
+                if (userInput == 1)
                 {
                     context.skills.Add(skill);
                     context.SaveChanges();
@@ -563,6 +560,7 @@ namespace GameEditor.Methods
 
                 int askType = -1;
                 StatTypeEnum type = StatTypeEnum.Team;
+                askType = Data.Methods.General.AskForUserInputEnum("Which type is the Stat ?", "Stat");
                 switch (askType)
                 {
                     case 0:
@@ -581,11 +579,11 @@ namespace GameEditor.Methods
                 stat.DisplaySelf();
                 
                 message = "Are you sure ?\n" +
-                    "0 - Yes\n" +
-                    "1 - No";
+                    "0 - No\n" +
+                    "1 - Yes";
                 userInput = Data.Methods.General.AskForUserInputInt(message, 0, 1);
 
-                if (userInput == 0)
+                if (userInput == 1)
                 {
                     context.stats.Add(stat);
                     context.SaveChanges();
@@ -641,6 +639,7 @@ namespace GameEditor.Methods
 
                 int askType = -1;
                 PerformanceTypeEnum type = PerformanceTypeEnum.Catch;
+                askType = Data.Methods.General.AskForUserInputEnum("Which type is the Performance ?", "Performance");
                 switch (askType)
                 {
                     case 0:
@@ -653,7 +652,7 @@ namespace GameEditor.Methods
                         type = PerformanceTypeEnum.LongForm;
                         break;
                     case 3:
-                        type = PerformanceTypeEnum.StandUp;
+                        type = PerformanceTypeEnum.Solo;
                         break;
                 }
 
@@ -678,11 +677,11 @@ namespace GameEditor.Methods
                 performance.DisplaySelf();
 
                 message = "Are you sure ?\n" +
-                    "0 - Yes\n" +
-                    "1 - No";
+                    "0 - No\n" +
+                    "1 - Yes";
                 userInput = Data.Methods.General.AskForUserInputInt(message, 0, 1);
 
-                if (userInput == 0)
+                if (userInput == 1)
                 {
                     context.performances.Add(performance);
                     context.SaveChanges();
@@ -706,13 +705,14 @@ namespace GameEditor.Methods
             }
         }
 
-        public static TrainingRoom CreateTrainingRoom()
+        public static TrainingRoom CreateTrainingRoom(string name)
         {
             TrainingRoom trainingRoom;
+            Shop shop = CreateShop(name);
             using (ConnectDB context = new ConnectDB())
             {
                 trainingRoom = context.trainingRooms.ElementAt(0);
-                trainingRoom = new TrainingRoom(trainingRoom.Name, trainingRoom.Description, 1, trainingRoom.Stats);
+                trainingRoom = new TrainingRoom(trainingRoom.Name, trainingRoom.Description, 1, trainingRoom.Stats, shop);
                 context.trainingRooms.Add(trainingRoom);
                 context.SaveChanges();
                 trainingRoom = context.trainingRooms.ElementAt(context.trainingRooms.Count() - 1);
@@ -736,10 +736,10 @@ namespace GameEditor.Methods
             return inventory;
         }
 
-        public static Store CreateStore(string name, TrainingRoom trainingRoom)
+        public static Shop CreateShop(string name)
         {
-            Store store;
-            name = name + "'s store";
+            Shop shop;
+            name = name + "'s shop";
             using (ConnectDB context = new ConnectDB())
             {
                 List<Equipment> equipmentList = new List<Equipment>();
@@ -747,14 +747,14 @@ namespace GameEditor.Methods
                 {
                     equipmentList.Add(equipment);
                 }
-                store = context.stores.ElementAt(0);
-                store = new Store(name, store.Description, equipmentList, trainingRoom);
-                context.stores.Add(store);
+                shop = context.shops.ElementAt(0);
+                shop = new Shop(name, shop.Description, equipmentList);
+                context.shops.Add(shop);
                 context.SaveChanges();
-                store = context.stores.ElementAt(context.stores.Count() - 1);
+                shop = context.shops.FirstOrDefault(shop => shop.Name == name);
             }
 
-            return store;
+            return shop;
         }
 
         public static Team CreateTeam(string name, Inventory inventory, string slogan, TrainingRoom trainingRoom, TeamTypeEnum type)
@@ -763,7 +763,14 @@ namespace GameEditor.Methods
             List<PowerStat> stats = new List<PowerStat>();
             Team team = new Team(name, 0, equipments, stats, inventory, slogan, 1500, trainingRoom, type);
             // Adding basic players to the team
-            team.Players = General.GetStarterPlayers();
+            List<Player> virtualPlayerList = General.GetStarterPlayers();
+            List<Player> playerList = new List<Player>();
+            foreach (Player virtualPlayer in virtualPlayerList)
+            {
+                Player player = CreatePlayer(virtualPlayer.Name, virtualPlayer.Level, virtualPlayer.Equipments, virtualPlayer.Stats, virtualPlayer.Inventory, virtualPlayer.Age, team, virtualPlayer.Type);
+                playerList.Add(player);
+            }
+            team.Players = playerList;
             using (ConnectDB context = new ConnectDB())
             { // Add the new team to the database
                 context.teams.Add(team);
@@ -772,6 +779,19 @@ namespace GameEditor.Methods
             }
 
             return team;
+        }
+
+        public static Player CreatePlayer(string name, int level, List<Equipment> equipments, List<PowerStat> stats, Inventory inventory, int age, Team team, PlayerTypeEnum type)
+        {
+            Player player = new Player(name, level, equipments, stats, inventory, age, team, type, false);
+            using (ConnectDB context = new ConnectDB())
+            { // Add the new player to the database 
+                context.players.Add(player);
+                context.SaveChanges();
+                player = context.players.FirstOrDefault(player => player.Name == name);
+            }
+
+            return player;
         }
     }
 }

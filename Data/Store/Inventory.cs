@@ -2,6 +2,8 @@
 using Data.Values;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,6 +13,7 @@ namespace Data.Store
 {
     public class Inventory : IDisplay
     {
+        [Key]
         private int _id;
         private List<Equipment> _equipments;
         private int _nbItemsMax;

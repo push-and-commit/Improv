@@ -3,6 +3,7 @@ using Data.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,6 +12,7 @@ namespace Data.Values
 {
     public class Stat : IDisplay
     {
+        [Key]
         private int _id;
         private string _name;
         private string _description;

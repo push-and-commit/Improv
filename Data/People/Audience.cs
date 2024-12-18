@@ -2,6 +2,8 @@
 using Data.Values;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,11 +12,14 @@ namespace Data.People
 {
     public class Audience : IDisplay
     {
+        [Key]
         private int _id;
         private string _name;
         private string _description;
         private int _level;
         private int _quantity;
+        private int _prizeId;
+        [ForeignKey("PrizeId")]
         private Prize _prize;
         private List<Skill> _skills;
 
@@ -28,6 +33,8 @@ namespace Data.People
             _quantity = quantity;
             _prize = prize;
             _skills = skills;
+
+            _prizeId = prize.Id;
         }
 
         public int Id { get => _id; set => _id = value; }
@@ -35,6 +42,7 @@ namespace Data.People
         public string Description { get => _description; set => _description = value; }
         public int Level { get => _level; set => _level = value; }
         public int Quantity { get => _quantity; set => _quantity = value; }
+        public virtual int PrizeId { get => _prizeId; set => _prizeId = value; }
         public virtual Prize Prize { get => _prize; set => _prize = value; }
         public virtual List<Skill> Skills { get => _skills; set => _skills = value; }
 

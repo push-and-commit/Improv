@@ -1,15 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Data.Store;
 using Data.Values;
+using Data.Interfaces;
 
 namespace Data.People
 {
-    public class Impro
+    public class Impro : ILevel
     {
+        [Key]
         private int _id;
         private string _name;
         private int _level;
@@ -17,6 +21,8 @@ namespace Data.People
         private int _exeprienceToLevelUp;
         private List<Equipment> _equipments;
         private List<PowerStat> _stats;
+        private int _inventoryId;
+        [ForeignKey("InventoryId")]
         private Inventory _inventory;
 
         public Impro() { }
@@ -30,6 +36,8 @@ namespace Data.People
             _equipments = equipments;
             _stats = stats;
             _inventory = inventory;
+
+            _inventoryId = inventory.Id;
         }
 
         public int Id { get => _id; set => _id = value; }
@@ -39,7 +47,18 @@ namespace Data.People
         public int ExeprienceToLevelUp { get => _exeprienceToLevelUp; set => _exeprienceToLevelUp = value; }
         public virtual List<Equipment> Equipments { get => _equipments; set => _equipments = value; }
         public virtual List<PowerStat> Stats { get => _stats; set => _stats = value; }
+        public virtual int InventoryId { get => _inventoryId; set => _inventoryId = value; }
         public virtual Inventory Inventory { get => _inventory; set => _inventory = value; }
+
+        public void LevelUp()
+        {
+            Level++;
+            foreach (PowerStat stat in this.Stats)
+            {
+                stat.Power++;
+            }
+            Inventory.NbItemsMax++;
+        }
 
         public void AddEquipment(Equipment equipment)
         {

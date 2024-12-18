@@ -1,4 +1,5 @@
-﻿using Data.People;
+﻿using Data;
+using Data.People;
 using Data.Store;
 using Data.Values;
 using System;
@@ -70,7 +71,8 @@ namespace GameEditor.Methods
                         Console.WriteLine("----------------");
                         Console.WriteLine($"Name : {team.Name}\n" +
                             $"Slogan : {team.Slogan}\n" +
-                            $"Level : {team.Level.ToString()}");
+                            $"Level : {team.Level.ToString()}\n" +
+                            $"Type : {team.Type}");
                         Console.WriteLine($"\nStats :");
                         foreach (PowerStat stat in team.Stats)
                         {
@@ -385,6 +387,11 @@ namespace GameEditor.Methods
             }
 
             return performances;
+        }
+
+        public static Dictionary<int, Equipment> ListEquipmentsType(string equipmentType)
+        {
+            throw new NotImplementedException();
         }
     }
 }

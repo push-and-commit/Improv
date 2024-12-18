@@ -9,12 +9,18 @@ using Data.Enums;
 using Data.Interfaces;
 using Data.Store;
 using Data.Values;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Data.People
 {
     public class Team : Impro, IDisplay
     {
+        [Key]
+        private int _id;
         private string _slogan;
+        private int _trainingRoomId;
+        [ForeignKey("TrainingRoomId")]
         private TrainingRoom _trainingRoom;
         private int _money;
         private List<Player> _players;
@@ -30,9 +36,13 @@ namespace Data.People
             _players = new List<Player>();
             _type = type;
             Inventory.NbItemsMax = 15;
+
+            _trainingRoomId = trainingRoom.Id;
         }
 
+        public int Id { get => _id; set => _id = value; }
         public string Slogan { get => _slogan; set => _slogan = value; }
+        public int TrainingRoomId { get => _trainingRoomId; set => _trainingRoomId = value; }
         public virtual TrainingRoom TrainingRoom { get => _trainingRoom; set => _trainingRoom = value; }
         public int Money { get => _money; set => _money = value; }
         public virtual List<Player> Players { get => _players; set => _players = value; }
@@ -80,25 +90,19 @@ namespace Data.People
             Players.Remove(player);
         }
 
-        public void BuyEquipment(Equipment equipment, int quantity)
+        public void BuyEquipment(Equipment equipment)
         {
-            if (Money >= quantity * equipment.Price)
+            if (Money >= equipment.Price)
             {
-                Money -= quantity * equipment.Price;
-                for (int i = 0; i < quantity; i++)
-                {
-                    Inventory.AddToInventory(equipment);
-                }
+                Money -= equipment.Price;
+                Inventory.AddToInventory(equipment);
             }
         }
 
-        public void SellEquipment(Equipment equipment, int quantity)
+        public void SellEquipment(Equipment equipment)
         {
-            Money += quantity * equipment.Price;
-            for (int i = 0; i < quantity; i++)
-            {
-                Inventory.RemoveFromInventory(equipment);
-            }
+            Money += equipment.Price;
+            Inventory.RemoveFromInventory(equipment);
         }
     }
 }
