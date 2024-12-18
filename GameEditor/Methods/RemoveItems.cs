@@ -129,7 +129,7 @@ namespace GameEditor.Methods
             using (ConnectDB context = new ConnectDB())
             { // Connect to database
                 Dictionary<int, Equipment> equipments = new Dictionary<int, Equipment>();
-                int cpt = ;
+                int cpt = 1;
                 int userInput = -1;
                 string message = "Which equipment would you like to remove ?";
 
