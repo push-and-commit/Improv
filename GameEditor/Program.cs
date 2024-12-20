@@ -8,8 +8,11 @@ namespace GameEditor
     {
         static void Main(string[] args)
         {
-            // Methods.General.LoadDB();
-            Methods.General.Game();
+            using (ConnectDB context = new ConnectDB())
+            {
+                Methods.General.LoadDB(context);
+                Methods.General.Game(context);
+            }
         }
     }
 }

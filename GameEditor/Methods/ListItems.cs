@@ -14,34 +14,31 @@ namespace GameEditor.Methods
     public class ListItems
     {
 
-        public static void Audiences()
+        public static void Audiences(ConnectDB context)
         {
-            using (ConnectDB context = new ConnectDB())
-            { // Connect to database
-                if (context.audiences.Count() > 0)
+            if (context.audiences.Count() > 0)
+            {
+                foreach (Audience audience in context.audiences)
                 {
-                    foreach (Audience audience in context.audiences)
+                    Console.WriteLine("----------------");
+                    Console.WriteLine($"Name : {audience.Name}\n" +
+                        $"Description : {audience.Description}\n" +
+                        $"Number of people : {audience.Quantity}\n" +
+                        $"Prize : {audience.Prize.Money} Improv Coins and {audience.Prize.Experience} points of experience");
+                    if(audience.Skills.Count > 0)
                     {
-                        Console.WriteLine("----------------");
-                        Console.WriteLine($"Name : {audience.Name}\n" +
-                            $"Description : {audience.Description}\n" +
-                            $"Number of people : {audience.Quantity}\n" +
-                            $"Prize : {audience.Prize.Money} Improv Coins and {audience.Prize.Experience} points of experience");
-                        if(audience.Skills.Count > 0)
+                        Console.WriteLine("Skills : ");
+                        foreach(Skill skill in audience.Skills)
                         {
-                            Console.WriteLine("Skills : ");
-                            foreach(Skill skill in audience.Skills)
-                            {
-                                Console.WriteLine(skill.Name);
-                            }
+                            Console.WriteLine(skill.Name);
                         }
                     }
-                    Console.WriteLine(); // Separate each audience with a carriage return
                 }
-                else
-                {
-                    Console.WriteLine("There are no audiences in the database");
-                }
+                Console.WriteLine(); // Separate each audience with a carriage return
+            }
+            else
+            {
+                Console.WriteLine("There are no audiences in the database");
             }
         }
 
@@ -60,85 +57,82 @@ namespace GameEditor.Methods
             return audiences;
         }
 
-        public static void Teams()
+        public static void Teams(ConnectDB context)
         {
-            using (ConnectDB context = new ConnectDB())
-            { // Connect to database
-                if (context.teams.Count() > 0)
+            if (context.teams.Count() > 0)
+            {
+                foreach (Team team in context.teams)
                 {
-                    foreach (Team team in context.teams)
+                    Console.WriteLine("----------------");
+                    Console.WriteLine($"Name : {team.Name}\n" +
+                        $"Slogan : {team.Slogan}\n" +
+                        $"Level : {team.Level.ToString()}\n" +
+                        $"Type : {team.Type}");
+                    Console.WriteLine($"\nStats :");
+                    foreach (PowerStat stat in team.Stats)
                     {
-                        Console.WriteLine("----------------");
-                        Console.WriteLine($"Name : {team.Name}\n" +
-                            $"Slogan : {team.Slogan}\n" +
-                            $"Level : {team.Level.ToString()}\n" +
-                            $"Type : {team.Type}");
-                        Console.WriteLine($"\nStats :");
-                        foreach (PowerStat stat in team.Stats)
-                        {
-                            Console.WriteLine($"{stat.Power.ToString()} : {stat.Stat.Name}");
-                        }
-                        Console.WriteLine($"\nEquipments equipped : ");
-                        foreach (Equipment equipment in team.Equipments)
-                        {
-                            Console.WriteLine($"{equipment.Name}");
-                        }
-                        Console.WriteLine("\nEquipments in inventory : ");
-                        foreach (Equipment equipment in team.Inventory.Equipments)
-                        {
-                            Console.WriteLine($"{equipment.Name}");
-                        }
-                        Console.WriteLine($"\nMoney : {team.Money.ToString()}");
-                        Console.WriteLine($"\nPlayers : ");
-                        foreach (Player player in team.Players)
-                        {
-                            Console.WriteLine($"Name : {player.Name}\n" +
-                                $"Level : {player.Level.ToString()}");
-                            if (player.Equipments.Count > 0)
-                            {
-                                Console.WriteLine("Equipments equipped :");
-                                foreach (Equipment equipment in player.Equipments)
-                                {
-                                    Console.WriteLine($"{equipment.Name}");
-                                }
-                            }
-                            if (player.Inventory.Equipments.Count > 0)
-                            {
-                                Console.WriteLine("Equipments in inventory :");
-                                foreach (Equipment equipment in player.Inventory.Equipments)
-                                {
-                                    Console.WriteLine($"{equipment.Name}");
-                                }
-                            }
-                            Console.WriteLine("Stats :\n");
-                            foreach (PowerStat stat in player.Stats)
-                            {
-                                Console.WriteLine($"Name : {stat.Stat.Name}\n" +
-                                    $"Power : {stat.Power.ToString()}");
-                            }
-                            Console.WriteLine($"Age : {player.Age.ToString()}");
-                            Console.WriteLine("Skills :");
-                            foreach(Skill skill in player.Skills)
-                            {
-                                Console.WriteLine($"Name : {skill.Name}");
-                            }
-                        }
-                        Console.WriteLine($"\nTraining room :");
-                        Console.WriteLine($"Name : {team.TrainingRoom.Name}\n" +
-                            $"Description : {team.TrainingRoom.Description}\n" +
-                            $"Level : {team.TrainingRoom.Level.ToString()}");
-                        Console.WriteLine("Stats :");
-                        foreach (PowerStat stat in team.TrainingRoom.Stats)
-                        {
-                            Console.WriteLine($"{stat.Power.ToString()} points of {stat.Stat.Name}");
-                        }
-                        Console.WriteLine(); // Separate each team with a carriage return
+                        Console.WriteLine($"{stat.Power.ToString()} : {stat.Stat.Name}");
                     }
+                    Console.WriteLine($"\nEquipments equipped : ");
+                    foreach (Equipment equipment in team.Equipments)
+                    {
+                        Console.WriteLine($"{equipment.Name}");
+                    }
+                    Console.WriteLine("\nEquipments in inventory : ");
+                    foreach (Equipment equipment in team.Inventory.Equipments)
+                    {
+                        Console.WriteLine($"{equipment.Name}");
+                    }
+                    Console.WriteLine($"\nMoney : {team.Money.ToString()}");
+                    Console.WriteLine($"\nPlayers : ");
+                    foreach (Player player in team.Players)
+                    {
+                        Console.WriteLine($"Name : {player.Name}\n" +
+                            $"Level : {player.Level.ToString()}");
+                        if (player.Equipments.Count > 0)
+                        {
+                            Console.WriteLine("Equipments equipped :");
+                            foreach (Equipment equipment in player.Equipments)
+                            {
+                                Console.WriteLine($"{equipment.Name}");
+                            }
+                        }
+                        if (player.Inventory.Equipments.Count > 0)
+                        {
+                            Console.WriteLine("Equipments in inventory :");
+                            foreach (Equipment equipment in player.Inventory.Equipments)
+                            {
+                                Console.WriteLine($"{equipment.Name}");
+                            }
+                        }
+                        Console.WriteLine("Stats :\n");
+                        foreach (PowerStat stat in player.Stats)
+                        {
+                            Console.WriteLine($"Name : {stat.Stat.Name}\n" +
+                                $"Power : {stat.Power.ToString()}");
+                        }
+                        Console.WriteLine($"Age : {player.Age.ToString()}");
+                        Console.WriteLine("Skills :");
+                        foreach(Skill skill in player.Skills)
+                        {
+                            Console.WriteLine($"Name : {skill.Name}");
+                        }
+                    }
+                    Console.WriteLine($"\nTraining room :");
+                    Console.WriteLine($"Name : {team.TrainingRoom.Name}\n" +
+                        $"Description : {team.TrainingRoom.Description}\n" +
+                        $"Level : {team.TrainingRoom.Level.ToString()}");
+                    Console.WriteLine("Stats :");
+                    foreach (PowerStat stat in team.TrainingRoom.Stats)
+                    {
+                        Console.WriteLine($"{stat.Power.ToString()} points of {stat.Stat.Name}");
+                    }
+                    Console.WriteLine(); // Separate each team with a carriage return
                 }
-                else
-                {
-                    Console.WriteLine("There are no teams in the database");
-                }
+            }
+            else
+            {
+                Console.WriteLine("There are no teams in the database");
             }
         }
 
@@ -157,44 +151,41 @@ namespace GameEditor.Methods
             return teams;
         }
 
-        public static void Players()
+        public static void Players(ConnectDB context)
         {
-            using (ConnectDB context = new ConnectDB())
-            { // Connect to database
-                if (context.players.Count() > 0)
+            if (context.players.Count() > 0)
+            {
+                foreach (Player player in context.players)
                 {
-                    foreach (Player player in context.players)
+                    Console.WriteLine("----------------");
+                    Console.WriteLine($"Name : {player.Name}\n" +
+                        $"Level : {player.Level.ToString()}\n");
+                    if (player.Equipments.Count > 0)
                     {
-                        Console.WriteLine("----------------");
-                        Console.WriteLine($"Name : {player.Name}\n" +
-                            $"Level : {player.Level.ToString()}\n");
-                        if (player.Equipments.Count > 0)
+                        Console.WriteLine("Equipments :");
+                        foreach (Equipment equipment in player.Equipments)
                         {
-                            Console.WriteLine("Equipments :");
-                            foreach (Equipment equipment in player.Equipments)
-                            {
-                                Console.WriteLine($"{equipment.Name}");
-                            }
+                            Console.WriteLine($"{equipment.Name}");
                         }
-                        Console.WriteLine("Stats :\n");
-                        foreach (PowerStat stat in player.Stats)
-                        {
-                            Console.WriteLine($"Name : {stat.Stat.Name}\n" +
-                                $"Power : {stat.Power.ToString()}");
-                        }
-                        Console.WriteLine($"Age : {player.Age.ToString()}");
-                        Console.WriteLine("Skills :");
-                        foreach (Skill skill in player.Skills)
-                        {
-                            Console.WriteLine($"Name : {skill.Name}");
-                        }
-                        Console.WriteLine(); // Separate each player with a carriage return
                     }
+                    Console.WriteLine("Stats :\n");
+                    foreach (PowerStat stat in player.Stats)
+                    {
+                        Console.WriteLine($"Name : {stat.Stat.Name}\n" +
+                            $"Power : {stat.Power.ToString()}");
+                    }
+                    Console.WriteLine($"Age : {player.Age.ToString()}");
+                    Console.WriteLine("Skills :");
+                    foreach (Skill skill in player.Skills)
+                    {
+                        Console.WriteLine($"Name : {skill.Name}");
+                    }
+                    Console.WriteLine(); // Separate each player with a carriage return
                 }
-                else
-                {
-                    Console.WriteLine("There are no players in the database");
-                }
+            }
+            else
+            {
+                Console.WriteLine("There are no players in the database");
             }
         }
 
@@ -213,36 +204,33 @@ namespace GameEditor.Methods
             return players;
         }
 
-        public static void Equipments()
+        public static void Equipments(ConnectDB context)
         {
-            using (ConnectDB context = new ConnectDB())
-            { // Connect to database
-                if (context.equipments.Count() > 0)
+            if (context.equipments.Count() > 0)
+            {
+                Console.WriteLine("----------------");
+                foreach (Equipment equipment in context.equipments)
                 {
-                    Console.WriteLine("----------------");
-                    foreach (Equipment equipment in context.equipments)
+                    Console.WriteLine($"Name : {equipment.Name}\n" +
+                        $"Description : {equipment.Description}\n" +
+                        $"Price : {equipment.Price.ToString()}\n" +
+                        $"Type : {equipment.Type}\n");
+                    Console.WriteLine("Stats :");
+                    foreach (PowerStat stat in equipment.Stats)
                     {
-                        Console.WriteLine($"Name : {equipment.Name}\n" +
-                            $"Description : {equipment.Description}\n" +
-                            $"Price : {equipment.Price.ToString()}\n" +
-                            $"Type : {equipment.Type}\n");
-                        Console.WriteLine("Stats :");
-                        foreach (PowerStat stat in equipment.Stats)
-                        {
-                            Console.WriteLine($"Name : {stat.Stat.Name}\n" +
-                                $"Power : {stat.Power}");
-                        }
-                        if (equipment.MinLevel > 0)
-                        {
-                            Console.WriteLine($"Level required to equip : {equipment.MinLevel}");
-                        }
-                        Console.WriteLine(); // Separate each equipment with a carriage return
+                        Console.WriteLine($"Name : {stat.Stat.Name}\n" +
+                            $"Power : {stat.Power}");
                     }
+                    if (equipment.MinLevel > 0)
+                    {
+                        Console.WriteLine($"Level required to equip : {equipment.MinLevel}");
+                    }
+                    Console.WriteLine(); // Separate each equipment with a carriage return
                 }
-                else
-                {
-                    Console.WriteLine("There are no equipments in the database");
-                }
+            }
+            else
+            {
+                Console.WriteLine("There are no equipments in the database");
             }
         }
 
@@ -261,33 +249,30 @@ namespace GameEditor.Methods
             return equipments;
         }
 
-        public static void Skills()
+        public static void Skills(ConnectDB context)
         {
-            using (ConnectDB context = new ConnectDB())
-            { // Connect to database
-                if (context.skills.Count() > 0)
+            if (context.skills.Count() > 0)
+            {
+                foreach (Skill skill in context.skills)
                 {
-                    foreach (Skill skill in context.skills)
+                    Console.WriteLine("----------------");
+                    Console.WriteLine($"Name : {skill.Name}\n" +
+                        $"Description : {skill.Description}\n" +
+                        $"Type : {skill.Type}\n" +
+                        $"Power : {skill.Power}\n");
+                    if (skill.Cost.Count > 0)
                     {
-                        Console.WriteLine("----------------");
-                        Console.WriteLine($"Name : {skill.Name}\n" +
-                            $"Description : {skill.Description}\n" +
-                            $"Type : {skill.Type}\n" +
-                            $"Power : {skill.Power}\n");
-                        if (skill.Cost.Count > 0)
+                        Console.WriteLine("Stats needed to use :");
+                        foreach (CostStat cost in skill.Cost)
                         {
-                            Console.WriteLine("Stats needed to use :");
-                            foreach (CostStat cost in skill.Cost)
-                            {
-                                Console.WriteLine($"{cost.Cost} points of {cost.Stat.Name}");
-                            }
+                            Console.WriteLine($"{cost.Cost} points of {cost.Stat.Name}");
                         }
                     }
                 }
-                else
-                {
-                    Console.WriteLine("There are no skills in the database");
-                }
+            }
+            else
+            {
+                Console.WriteLine("There are no skills in the database");
             }
         }
 
@@ -306,34 +291,68 @@ namespace GameEditor.Methods
             return skills;
         }
 
-        public static void Stats()
+        public static void Stats(ConnectDB context)
         {
-            using (ConnectDB context = new ConnectDB())
-            { // Connect to database
-                if (context.stats.Count() > 0)
+            if (context.stats.Count() > 0)
+            {
+                foreach (Stat stat in context.stats)
                 {
-                    foreach (Stat stat in context.stats)
-                    {
-                        Console.WriteLine("----------------");
-                        Console.WriteLine($"Name : {stat.Name}\n" +
-                            $"Description : {stat.Description}\n" +
-                            $"Type : {stat.Type}");
-                        Console.WriteLine(); // Separate each stat with a carriage return
-                    }
+                    Console.WriteLine("----------------");
+                    Console.WriteLine($"Name : {stat.Name}\n" +
+                        $"Description : {stat.Description}\n" +
+                        $"Type : {stat.Type}");
+                    Console.WriteLine(); // Separate each stat with a carriage return
                 }
-                else
-                {
-                    Console.WriteLine("There are no stats in the database");
-                }
+            }
+            else
+            {
+                Console.WriteLine("There are no stats in the database");
             }
         }
 
-        public static Dictionary<int, Stat> ListStats(ConnectDB context)
+        public static Dictionary<int, Stat> ListStats(ConnectDB context, string type)
         {
             Dictionary<int, Stat> stats = new Dictionary<int, Stat>();
+            List<Stat> statList = new List<Stat>();
             int cpt = 1;
 
-            foreach (Stat stat in context.stats)
+            switch (type)
+            {
+                case "Team":
+                    foreach (Stat stat in context.stats)
+                    {
+                        if (stat.Type.ToString() == "Team")
+                        {
+                            statList.Add(stat);
+                        }
+                    }
+                    break;
+                case "Player":
+                    foreach (Stat stat in context.stats)
+                    {
+                        if (stat.Type.ToString() == "Player")
+                        {
+                            statList.Add(stat);
+                        }
+                    }
+                    break;
+                case "TrainingRoom":
+                    foreach (Stat stat in context.stats)
+                    {
+                        if (stat.Type.ToString() == "TrainingRoom")
+                        {
+                            statList.Add(stat);
+                        }
+                    }
+                    break;
+                default:
+                    foreach (Stat stat in context.stats)
+                    {
+                        statList.Add(stat);
+                    }
+                    break;
+            }
+            foreach (Stat stat in statList)
             {
                 stats.Add(cpt, stat);
                 Console.WriteLine($"{cpt} - {stat.Name}");
@@ -343,34 +362,31 @@ namespace GameEditor.Methods
             return stats;
         }
 
-        public static void Performances()
+        public static void Performances(ConnectDB context)
         {
-            using (ConnectDB context = new ConnectDB())
-            { // Connect to database
-                if (context.performances.Count() > 0)
+            if (context.performances.Count() > 0)
+            {
+                foreach (Performance performance in context.performances)
                 {
-                    foreach (Performance performance in context.performances)
-                    {
-                        Console.WriteLine("----------------");
-                        Console.WriteLine($"Name : {performance.Name}\n" +
-                            $"Description : {performance.Description}\n" +
-                            $"Duration : {performance.Duration}\n" +
-                            $"Duration : {performance.NbPlayers}\n" +
-                            $"Prize : {performance.Prize.Money} Improv Coins and {performance.Prize.Experience} points of experience\n");
-                        if(performance.EquipmentNeeded.Count > 0) {
-                            Console.WriteLine($"Equipments needed");
-                            foreach (Equipment equipment in performance.EquipmentNeeded)
-                            {
-                                Console.WriteLine($"Name : {equipment.Name}");
-                            }
+                    Console.WriteLine("----------------");
+                    Console.WriteLine($"Name : {performance.Name}\n" +
+                        $"Description : {performance.Description}\n" +
+                        $"Duration : {performance.Duration}\n" +
+                        $"Duration : {performance.NbPlayers}\n" +
+                        $"Prize : {performance.Prize.Money} Improv Coins and {performance.Prize.Experience} points of experience\n");
+                    if(performance.EquipmentNeeded.Count > 0) {
+                        Console.WriteLine($"Equipments needed");
+                        foreach (Equipment equipment in performance.EquipmentNeeded)
+                        {
+                            Console.WriteLine($"Name : {equipment.Name}");
                         }
-                        Console.WriteLine(); // Separate each performance with a carriage return
                     }
+                    Console.WriteLine(); // Separate each performance with a carriage return
                 }
-                else
-                {
-                    Console.WriteLine("There are no performances in the database");
-                }
+            }
+            else
+            {
+                Console.WriteLine("There are no performances in the database");
             }
         }
 
@@ -389,9 +405,19 @@ namespace GameEditor.Methods
             return performances;
         }
 
-        public static Dictionary<int, Equipment> ListEquipmentsType(string equipmentType)
+        public static Dictionary<int, Equipment> ListEquipmentsType(string equipmentType, ConnectDB context)
         {
-            throw new NotImplementedException();
+            Dictionary<int, Equipment> equipmentList = new Dictionary<int, Equipment>();
+            int cpt = 1;
+            foreach(Equipment equipment in context.equipments)
+            {
+                if (equipment.Type.ToString() == equipmentType)
+                {
+                    equipmentList.Add(cpt, equipment);
+                    Console.WriteLine($"{cpt} - {equipment.Name} | {equipment.Price} Improv Coins");
+                }
+            }
+            return equipmentList;
         }
     }
 }

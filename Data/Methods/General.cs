@@ -59,6 +59,15 @@ namespace Data.Methods
             return result;
         }
 
+        public static bool AskYesNo(string message)
+        {
+            message = message + "\n" +
+                "0 - No\n" +
+                "1 - Yes";
+            int input = AskForUserInputInt(message, 0, 1);
+            return input == 0 ? false : true;
+        }
+
         public static int AskForUserInputEnum(string message, string type)
         {
             int userInput = -1;

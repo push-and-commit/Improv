@@ -50,7 +50,6 @@ namespace Data.People
             Console.WriteLine($"Description : {_description}");
             Console.WriteLine($"Level : {_level}");
             Console.WriteLine("Stats :");
-            Console.WriteLine("----------------------------------------------------------");
             foreach (PowerStat stat in _stats)
             {
                 Console.WriteLine($"{stat.Power} points of {stat.Stat.Name} ");

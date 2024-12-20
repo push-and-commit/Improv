@@ -9,18 +9,17 @@ namespace GameEditor.Methods
 {
     public class CheckItems
     {
-        public static bool TeamNameAlreadyExists(string name)
+        public static bool TeamNameAlreadyExists(string name, ConnectDB context)
         {
             bool result = false;
-            using (ConnectDB context = new ConnectDB())
-            {
-                if (context.teams.Count() > 0) {
-                    if (context.teams.FirstOrDefault(team => team.Name == name) != null)
-                    {
-                        result = true;
-                    }
+
+            if (context.teams.Count() > 0) {
+                if (context.teams.FirstOrDefault(team => team.Name == name) != null)
+                {
+                    result = true;
                 }
             }
+
             return result;
         }
     }

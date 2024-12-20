@@ -47,6 +47,10 @@ namespace Data.Store
             {
                 Equipments.Add(equipment);
             }
+            else
+            {
+                Console.WriteLine($"Can't add {equipment.Name}. Your inventory is full !");
+            }
         }
 
         public void RemoveFromInventory(Equipment equipment)

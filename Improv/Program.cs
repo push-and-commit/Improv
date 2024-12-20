@@ -10,7 +10,10 @@ namespace Improv
     {
         static void Main(string[] args)
         {
-            Game.StartGame();
+            using (ConnectDB context = new ConnectDB())
+            {
+                Game.StartGame(context);
+            }
         }
     }
 }

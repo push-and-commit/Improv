@@ -101,7 +101,7 @@ namespace Data.People
 
         public void SellEquipment(Equipment equipment)
         {
-            Money += equipment.Price;
+            Money += Convert.ToInt32(equipment.Price * 0.8);
             Inventory.RemoveFromInventory(equipment);
         }
     }

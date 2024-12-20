@@ -14,24 +14,26 @@ using GameEditor.Methods;
 using System.Diagnostics;
 using System.Numerics;
 using Data.Enums;
+using Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace Improv.Methods
 {
     public class Game
     {
-        public static void StartGame()
+        public static void StartGame(ConnectDB context)
         {
-            int userInput = MainMenu();
+            int userInput = MainMenu(context);
             switch (userInput)
             {
                 case 0:
                     Console.WriteLine("Bye !");
                     break;
                 case 1:
-                    InitializeNewGame();
+                    InitializeNewGame(context);
                     break;
                 case 2:
-                    Dictionary<int, Team> games = GameEditor.Methods.General.GetPlayerGames();
+                    Dictionary<int, Team> games = GameEditor.Methods.General.GetPlayerGames(context);
                     if (games.Count > 0)
                     {
                         Console.WriteLine("0 - Back to main menu");
@@ -44,26 +46,26 @@ namespace Improv.Methods
 
                         if (userInput == 0)
                         {
-                            StartGame();
+                            StartGame(context);
                         }
                         else
                         {
-                            Team gameToPlay = games.ElementAt(userInput).Value;
-                            GameEditor.Methods.General.LoadGame(gameToPlay.Name);
+                            Team gameToPlay = GameEditor.Methods.GetItems.PlayerByName(games[userInput].Name);
+                            GameEditor.Methods.General.LoadGame(gameToPlay.Name, context);
 
-                            TrainingRoomMenu(gameToPlay);
+                            TrainingRoomMenu(gameToPlay, context);
                         }
                     }
                     else
                     {
                         Console.WriteLine("There are no existing game\n");
-                        StartGame();
+                        StartGame(context);
                     }
                     break;
             }
         }
 
-        public static int MainMenu()
+        public static int MainMenu(ConnectDB context)
         {
             int userInput;
 
@@ -77,7 +79,7 @@ namespace Improv.Methods
             return userInput;
         }
 
-        public static void InitializeNewGame()
+        public static void InitializeNewGame(ConnectDB context)
         {
             string name;
             bool isValidatedName = false;
@@ -91,16 +93,14 @@ namespace Improv.Methods
                 message = "What is the name of your team ?\n" +
                     "My choice";
                 name = Data.Methods.General.AskForUserInput(message);
-                if (GameEditor.Methods.CheckItems.TeamNameAlreadyExists(name))
+                if (GameEditor.Methods.CheckItems.TeamNameAlreadyExists(name, context))
                 {
                     Console.WriteLine("This name is already taken. Please choose another one");
                 }
                 else
                 {
-                    userInput = Data.Methods.General.AskForUserInputInt("Your name is " + name + "\nAre you sure ?" +
-                        "\n0 - No" +
-                        "\n1 - Yes", 0, 1);
-                    isValidatedName = userInput == 1 ? true : false;
+                    message = $"Your name is {name} ?";
+                    isValidatedName = Data.Methods.General.AskYesNo(message);
                 }
             } while (!isValidatedName);
 
@@ -109,14 +109,12 @@ namespace Improv.Methods
                 message = "What is the moto of your team ?\n" +
                     "My choice";
                 slogan = Data.Methods.General.AskForUserInput(message);
-                userInput = Data.Methods.General.AskForUserInputInt("Your moto is " + slogan + "\nAre you sure ?" +
-                    "\n0 - No" +
-                    "\n1 - Yes", 0, 1);
-                isValidatedSlogan = userInput == 1 ? true : false;
+                message = $"Your moto is {slogan}";
+                isValidatedSlogan = Data.Methods.General.AskYesNo(message);
             } while (!isValidatedSlogan);
 
             // Create new game in database
-            Team team = GameEditor.Methods.General.CreateNewGame(name, slogan);
+            Team team = GameEditor.Methods.General.CreateNewGame(name, slogan, context);
 
             // Welcome speech
             Console.WriteLine($"Welcome {team.Name} ! I see that you are a new improvisation team.\n" +
@@ -126,13 +124,13 @@ namespace Improv.Methods
                 $"Don't worry, I will be here to guide you in your first steps as a manager of an improvisation team !");
 
             // Start training room tutorial
-            TrainingRoomTutorial(team);
+            TrainingRoomTutorial(team, context);
 
             // Launch home screen
-            TrainingRoomMenu(team);
+            TrainingRoomMenu(team, context);
         }
 
-        public static void TrainingRoomMenu(Team team)
+        public static void TrainingRoomMenu(Team team, ConnectDB context)
         {
             string message;
             int userInput = -1;
@@ -148,16 +146,16 @@ namespace Improv.Methods
             {
                 case 0:
                     Console.WriteLine($"Your journey with {team.Name} stops for now. Hope to see you soon !");
-                    StartGame();
+                    StartGame(context);
                     break;
                 case 1:
-                    ShopMenu(team);
+                    ShopMenu(team, context);
                     break;
                 case 2:
-                    PerformanceMenu(team);
+                    PerformanceMenu(team, context);
                     break;
                 case 3:
-                    GoBackHome(team);
+                    GoBackHome(team, context);
                     break;
             }
         }
@@ -168,14 +166,21 @@ namespace Improv.Methods
          * 
          /////////////////////////*/
 
-        public static void ShopMenu(Team team)
+        public static void ShopMenu(Team team, ConnectDB context)
         {
-            Shop shop = GameEditor.Methods.GetItems.Shop(team);
+            Console.WriteLine(team.Name);
+            foreach (Team t in context.teams)
+            {
+                ImportDependencies.ImportTeamDependencies(team, context);
+                t.DisplaySelf();
+            }
+
+            // Shop shop = GameEditor.Methods.GetItems.Shop(team);
             string message;
             int userInput = -1;
 
-            Console.WriteLine($"{shop.Name} !\n" +
-                $"{shop.Description}");
+            /* Console.WriteLine($"{shop.Name} !\n" +
+                $"{shop.Description}");*/
 
             message = "What would you like to do ?\n" +
                 "0 - Back to Training room\n" +
@@ -190,30 +195,30 @@ namespace Improv.Methods
             {
                 case 0:
                     Console.WriteLine("Thanks for stopping by ! Hope to see you soon !");
-                    TrainingRoomMenu(team);
+                    TrainingRoomMenu(team, context);
                     break;
                 case 1:
-                    BuyEquipmentMenu(team);
+                    BuyEquipmentMenu(team, context);
                     break;
                 case 2:
-                    SellEquipmentMenu(team);
+                    SellEquipmentMenu(team, context);
                     break;
                 case 3:
-                    RecruitPlayerMenu(team);
+                    RecruitPlayerMenu(team, context);
                     break;
                 case 4:
-                    SellPlayerMenu(team);
+                    SellPlayerMenu(team, context);
                     break;
                 case 5:
-                    UpgradeTrainingRoomMenu(team);
+                    UpgradeTrainingRoomMenu(team, context);
                     break;
             }
         }
         
-        public static void BuyEquipmentMenu(Team team)
+        public static void BuyEquipmentMenu(Team team, ConnectDB context)
         {
             string message = "What would you like to buy ?\n" +
-                "0 - Back" +
+                "0 - Back\n" +
                 "1 - Player equipment\n" +
                 "2 - Team equipment\n" +
                 "3 - Consumable";
@@ -226,7 +231,7 @@ namespace Improv.Methods
                 switch (userInput)
                 {
                     case 0:
-                        ShopMenu(team);
+                        ShopMenu(team, context);
                         break;
                     case 1:
                         equipmentType = "Player";
@@ -239,41 +244,62 @@ namespace Improv.Methods
                         break;
                 }
 
-                BuyEquipments(team, equipmentType);
+                BuyEquipments(team, equipmentType, context);
             } while (userInput != 0);
         }
 
-        public static void BuyEquipments(Team team, string equipmentType)
+        public static void BuyEquipments(Team team, string equipmentType, ConnectDB context)
         {
             string message;
             int userInput = -1;
-
-            team.Money = int.MaxValue;
+            bool isSure = false;
 
             do
             {
                 Console.WriteLine("0 - Back to the shop");
-                Dictionary<int, Equipment> equipmentList = GameEditor.Methods.ListItems.ListEquipmentsType(equipmentType);
+                Dictionary<int, Equipment> equipmentList = GameEditor.Methods.ListItems.ListEquipmentsType(equipmentType, context);
 
-                message = $"Your Improv Coins : {team.Money}";
+                message = $"Your Improv Coins : {team.Money}\n" +
+                    $"Choose an item to list their stats";
                 userInput = Data.Methods.General.AskForUserInputInt(message , 0, equipmentList.Count);
-                if(team.Money >= equipmentList[userInput].Price)
+                if (userInput != 0)
                 {
-                    team.BuyEquipment(equipmentList[userInput]);
-                    Console.WriteLine($"Congrats ! You just bought {equipmentList[userInput].Name} !");
+                    Equipment equipment = context.equipments.Include(dbEquipment => dbEquipment.Stats).FirstOrDefault(dbEquipment => dbEquipment.Id == equipmentList[userInput].Id);
+                    equipment.DisplaySelf();
+                    message = $"Would you like to buy {equipment.Name} ?";
+                    isSure = Data.Methods.General.AskYesNo(message);
+                    if (isSure && team.Money >= equipment.Price)
+                    {
+                        team = context.teams.Include(dbTeam => dbTeam.Inventory).FirstOrDefault(dbTeam => dbTeam.InventoryId == team.InventoryId);
+                        if (team.Inventory.Equipments.Count < team.Inventory.NbItemsMax)
+                        {
+                            team.BuyEquipment(equipment);
+                            context.SaveChanges();
+                            Console.WriteLine($"Congrats ! You just bought {equipment.Name} !");
+                        }
+                        else
+                        {
+                            Console.WriteLine("Your inventory is full !");
+                        }
+                    }
+                    else if(isSure && team.Money < equipment.Price)
+                    {
+                        Console.WriteLine($"You don't have enough Improv Coins to buy {equipment.Name}. {equipment.Price} Improv Coins needed !");
+                    }
                 }
                 else
                 {
-                    Console.WriteLine($"You don't have enough Imprv Coins to buy {equipmentList[userInput].Name}. {equipmentList[userInput].Price} Improv Coins needed !");
+                    Console.WriteLine("Hope to see you soon !");
                 }
             } while (userInput != 0);
 
         }
 
-        public static void SellEquipmentMenu(Team team)
+        public static void SellEquipmentMenu(Team team, ConnectDB context)
         {
             string message;
             int userInput = -1;
+            bool isSure = false;
 
             do
             {
@@ -302,8 +328,14 @@ namespace Improv.Methods
                     userInput = Data.Methods.General.AskForUserInputInt(message, 0, equipments.Count);
                     if (userInput != 0)
                     {
-                        team.SellEquipment(equipments[userInput]);
-                        Console.WriteLine($"You earned {equipments[userInput].Price} Improv Coins");
+                        double sellPrice = Math.Ceiling(equipments[userInput].Price * 0.8);
+                        message = $"You are about to sell {equipments[userInput].Name} for {sellPrice} Improv Coins.\nAre you sure ?";
+                        isSure = Data.Methods.General.AskYesNo(message);
+                        if (isSure)
+                        {
+                            team.SellEquipment(equipments[userInput]);
+                            Console.WriteLine($"You earned {sellPrice} Improv Coins");
+                        }
                     }
                 }
                 else
@@ -314,13 +346,14 @@ namespace Improv.Methods
             } while(userInput != 0);
         }
 
-        public static void RecruitPlayerMenu(Team team)
+        public static void RecruitPlayerMenu(Team team, ConnectDB context)
         {
             string message;
             int userInput = -1;
             int cpt;
             int price = 0;
-            List<Player> playerList = GameEditor.Methods.GetItems.GetDefaultPlayers();
+            bool isSure = false;
+            List<Player> playerList = GameEditor.Methods.GetItems.GetDefaultPlayers(context);
             Dictionary<int, Player> playerDictionary = new Dictionary<int, Player>();
 
             if (playerList.Count > 0)
@@ -368,13 +401,11 @@ namespace Improv.Methods
                             Player virtualPlayer = playerDictionary[userInput];
                             virtualPlayer.DisplaySelf();
 
-                            message = "Would you like to recruit them ?\n" +
-                                "0 - No\n" +
-                                "1 - Yes";
-                            userInput = Data.Methods.General.AskForUserInputInt(message, 0, 1);
-                            if (userInput == 1 && team.Money >= price)
+                            message = "Would you like to recruit them ?";
+                            isSure = Data.Methods.General.AskYesNo(message);
+                            if (isSure && team.Money >= price)
                             {
-                                Player player = GameEditor.Methods.AddItems.CreatePlayer(virtualPlayer.Name, virtualPlayer.Level, virtualPlayer.Equipments, virtualPlayer.Stats, virtualPlayer.Inventory, virtualPlayer.Age, team, virtualPlayer.Type);
+                                Player player = GameEditor.Methods.AddItems.CreatePlayer(virtualPlayer.Name, virtualPlayer.Level, virtualPlayer.Equipments, virtualPlayer.Stats, virtualPlayer.Inventory, virtualPlayer.Age, team, virtualPlayer.Type, context);
                                 team.Money -= price;
                                 Console.WriteLine($"Congrats ! You just recruited {player.Name} for {price} Improv Coins !");
                             }
@@ -389,12 +420,13 @@ namespace Improv.Methods
             }
         }
 
-        public static void SellPlayerMenu(Team team)
+        public static void SellPlayerMenu(Team team, ConnectDB context)
         {
             string message;
             int userInput = -1;
             int cpt = 1;
             int price = 0;
+            bool isSure = false;
 
             do
             {
@@ -431,31 +463,28 @@ namespace Improv.Methods
                     }
 
                     message = $"You are about to sell {player.Values.ElementAt(0).Name} for {price} Improv Coins\n" +
-                        $"Are you sure ?\n" +
-                        $"0 - No\n" +
-                        $"1 - Yes";
-                    userInput = Data.Methods.General.AskForUserInputInt(message, 0, 1);
-                    if(userInput == 1)
+                        $"Are you sure ?";
+                    isSure = Data.Methods.General.AskYesNo(message);
+                    if(isSure)
                     {
                         player.Values.ElementAt(0).leaveTeam(team);
+                        team.Money += price;
                         Console.WriteLine($"With regrets, {player.Values.ElementAt(0).Name} has left your team. You earned {price} Improv Coins.");
                     }
                 }
             } while (userInput != 0);
         }
 
-        public static void UpgradeTrainingRoomMenu(Team team)
+        public static void UpgradeTrainingRoomMenu(Team team, ConnectDB context)
         {
             string message;
-            int userInput = -1;
+            bool isSure = false;
 
-            message = "Would you like to upgrade your Training room ?\n" +
-                "0 - No\n" +
-                "1 - Yes";
-            userInput = Data.Methods.General.AskForUserInputInt(message, 0, 1);
+            message = "Would you like to upgrade your Training room ?";
+            isSure = Data.Methods.General.AskYesNo(message);
             int price = 5000 * team.TrainingRoom.Level;
 
-            if (userInput == 1 && team.Money >= price)
+            if (isSure && team.Money >= price)
             {
                 team.TrainingRoom.LevelUp();
             }
@@ -477,7 +506,7 @@ namespace Improv.Methods
          * 
          /////////////////////////*/
          
-        public static void PerformanceMenu(Team team)
+        public static void PerformanceMenu(Team team, ConnectDB context)
         {
             string message;
             int userInput = -1;
@@ -504,7 +533,7 @@ namespace Improv.Methods
             else
             {
                 Console.WriteLine("Hope to see you again soon !");
-                TrainingRoomMenu(team);
+                TrainingRoomMenu(team, context);
             }
         }
 
@@ -520,7 +549,7 @@ namespace Improv.Methods
          * 
          /////////////////////////*/
 
-        public static void GoBackHome(Team team)
+        public static void GoBackHome(Team team, ConnectDB context)
         {
             string message;
             int userInput = -1;
@@ -545,7 +574,7 @@ namespace Improv.Methods
          * 
          /////////////////////////*/
 
-        private static void TrainingRoomTutorial(Team team)
+        private static void TrainingRoomTutorial(Team team, ConnectDB context)
         {
             Console.WriteLine("This is your training room ! This will be your place and your safe space :)\n" +
                 "Here, you will be able to do many things.\n" +
@@ -556,30 +585,30 @@ namespace Improv.Methods
                 "A group of friends started improvisation recently and are looking to join a team !");
 
             // Start shop tutorial
-            ShopTutorial(team);
+            ShopTutorial(team, context);
 
             Console.WriteLine("Here, you can also go on a performance with your team !");
             // Start performance tutorial
-            PerformanceTutorial(team);
+            PerformanceTutorial(team, context);
 
             Console.WriteLine("After such a long day and great perforamnces, both your player and yourself need a well deserved rest, you can go back home !");
             // Start go back home tutorial
-            GoBackHomeTutorial(team);
+            GoBackHomeTutorial(team, context);
         }
 
-        private static void ShopTutorial(Team team)
+        private static void ShopTutorial(Team team, ConnectDB context)
         {
             string message = "";
             int userInput = Data.Methods.General.AskForUserInputInt(message, 1, 1);
         }
 
-        private static void PerformanceTutorial(Team team)
+        private static void PerformanceTutorial(Team team, ConnectDB context)
         {
             string message = "";
             int userInput = Data.Methods.General.AskForUserInputInt(message, 2, 2);
         }
 
-        private static void GoBackHomeTutorial(Team team)
+        private static void GoBackHomeTutorial(Team team, ConnectDB context)
         {
             string message = "";
             int userInput = Data.Methods.General.AskForUserInputInt(message, 3, 3);
@@ -591,12 +620,7 @@ namespace Improv.Methods
          * 
          /////////////////////////*/
 
-        public static void InitializeShop(Team team)
-        {
-            GameEditor.Methods.General.ListEquipments();
-        }
-
-        public static void Fight(Team team, Performance performance, Audience audience)
+        public static void Fight(Team team, Performance performance, Audience audience, ConnectDB context)
         {
             // General variables
             int userInput;
@@ -843,7 +867,7 @@ namespace Improv.Methods
             }
 
             // Calcul final de la performance
-            if (audienceSatisfaction >= 50)
+            if (audienceSatisfaction >= 80)
             {
                 Console.WriteLine("L'équipe a gagné la performance !");
                 team.Money += audience.Prize.Money;
