@@ -52,14 +52,13 @@ namespace Improv.Methods
                         else
                         {
                             Team gameToPlay = GameEditor.Methods.GetItems.TeamByName(games[userInput].Name);
-                            // GameEditor.Methods.General.LoadGame(gameToPlay.Name, context);
 
                             TrainingRoomMenu(gameToPlay, context);
                         }
                     }
                     else
                     {
-                        Console.WriteLine("There are no existing game\n");
+                        Console.WriteLine("\nThere are no existing game\n");
                         StartGame(context);
                     }
                     break;
@@ -120,7 +119,7 @@ namespace Improv.Methods
             // Create new game in database
             Team team = GameEditor.Methods.General.CreateNewGame(name, slogan, context);
 
-            // Welcome speech
+            /*// Welcome speech
             Console.WriteLine($"Welcome {team.Name} ! I see that you are a new improvisation team.\n" +
                 $"First of all, I would like to congratulate you on creating it !\n" +
                 $"I love it when people support local theaters, but it takes a lot to participate in it and so much more to develop a new structure !\n" +
@@ -128,7 +127,7 @@ namespace Improv.Methods
                 $"Don't worry, I will be here to guide you in your first steps as a manager of an improvisation team !");
 
             // Start training room tutorial
-            TrainingRoomTutorial(team, context);
+            TrainingRoomTutorial(team, context);*/
 
             // Launch home screen
             TrainingRoomMenu(team, context);

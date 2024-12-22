@@ -23,6 +23,16 @@ namespace Data.Values
 
         public PowerStat() { }
 
+        public PowerStat(PowerStat powerStat)
+        {
+            _stat = powerStat.Stat;
+            _objectName = powerStat.ObjectName;
+            _objectType = powerStat.ObjectType;
+            _power = powerStat.Power;
+
+            _statId = powerStat.Id;
+        }
+
         public PowerStat(Stat stat, string objectName, string objectType, int power)
         {
             _stat = stat;

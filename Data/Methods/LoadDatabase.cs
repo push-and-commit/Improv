@@ -30,7 +30,7 @@ namespace Data.Methods
             if (!context.players.Any())
             {
                 LoadDB(context);
-                TestTeam(context);
+                // TestTeam(context); // Testing team, dev only
                 RestartProgram();
             }
         }

@@ -731,11 +731,22 @@ namespace GameEditor.Methods
             List<PowerStat> stats = new List<PowerStat>();
             Team team = new Team(name, 0, equipments, stats, inventory, slogan, 1500, trainingRoom, type);
             // Adding basic players to the team
-            List<Player> virtualPlayerList = General.GetStarterPlayers();
+            List<Player> dbPlayerList = General.GetStarterPlayers();
             List<Player> playerList = new List<Player>();
-            foreach (Player virtualPlayer in virtualPlayerList)
+            foreach (Player dbPlayer in dbPlayerList)
             {
-                Player player = CreatePlayer(virtualPlayer.Name, virtualPlayer.Level, virtualPlayer.Equipments, virtualPlayer.Stats, virtualPlayer.Inventory, virtualPlayer.Age, team, virtualPlayer.Type, context);
+                context.players.Entry(dbPlayer).Collection(dbPlayer => dbPlayer.Equipments).Load();
+                context.players.Entry(dbPlayer).Collection(dbPlayer => dbPlayer.Stats).Load();
+                Inventory playerInventory = CreateInventory(context);
+                List<PowerStat> playerStats = new List<PowerStat>();
+                foreach (PowerStat stat in dbPlayer.Stats)
+                {
+                    PowerStat powerStat = new PowerStat(stat);
+                    context.Add(powerStat);
+                    context.SaveChanges();
+                    playerStats.Add(context.powerStats.ElementAt(context.powerStats.Count() - 1));
+                }
+                Player player = CreatePlayer(dbPlayer.Name, dbPlayer.Level, dbPlayer.Equipments, playerStats, playerInventory, dbPlayer.Age, team, dbPlayer.Type, dbPlayer.Skills, context);
                 playerList.Add(player);
             }
             team.Players = playerList;
@@ -747,13 +758,16 @@ namespace GameEditor.Methods
             return team;
         }
 
-        public static Player CreatePlayer(string name, int level, List<Equipment> equipments, List<PowerStat> stats, Inventory inventory, int age, Team team, PlayerTypeEnum type, ConnectDB context)
+        public static Player CreatePlayer(string name, int level, List<Equipment> equipments, List<PowerStat> stats, Inventory inventory, int age, Team team, PlayerTypeEnum type, List<Skill> skills, ConnectDB context)
         {
             Player player = new Player(name, level, equipments, stats, inventory, age, team, type, false);
-            // Add the new player to the database 
+            // Add the new player to the database
             context.players.Add(player);
             context.SaveChanges();
             player = context.players.FirstOrDefault(player => player.Name == name);
+            player.Skills = skills;
+            context.Update(player);
+            context.SaveChanges();
 
             return player;
         }
