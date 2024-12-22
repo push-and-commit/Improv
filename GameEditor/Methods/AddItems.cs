@@ -154,7 +154,7 @@ namespace GameEditor.Methods
                         type = TeamTypeEnum.Player;
                         break;
                     case 1:
-                        type = TeamTypeEnum.Robot;
+                        type = TeamTypeEnum.Computer;
                         break;
                 }
 
@@ -366,7 +366,7 @@ namespace GameEditor.Methods
                 List<PowerStat> equipmentStats = Methods.General.AskUserForStats(askMessage, atLeastMessage, name, type.ToString(), context);
 
                 // Verify the entries
-                Equipment equipment = new Equipment(name, description, price, type, equipmentStats, minLevel);
+                Equipment equipment = new Equipment(name, description, price, type, equipmentStats, minLevel, true);
                 Console.WriteLine("------------------------");
                 Console.WriteLine("You are about to create a new Equipment with the following parameters :");
                 equipment.DisplaySelf();

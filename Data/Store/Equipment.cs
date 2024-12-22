@@ -23,10 +23,22 @@ namespace Data.Store
         private EquipmentTypeEnum _type;
         private List<PowerStat> _stats;
         private int _minLevel;
+        private bool _isDefault;
 
         public Equipment() { }
 
-        public Equipment(string name, string description, int price, EquipmentTypeEnum type, List<PowerStat> stats, int minLevel)
+        public Equipment(Equipment equipment, bool isDefault)
+        {
+            _name = equipment.Name;
+            _description = equipment._description;
+            _price = equipment.Price;
+            _type = equipment.Type;
+            _stats = equipment.Stats;
+            _minLevel = equipment.MinLevel;
+            _isDefault = isDefault;
+        }
+
+        public Equipment(string name, string description, int price, EquipmentTypeEnum type, List<PowerStat> stats, int minLevel, bool isDefault)
         {
             _name = name;
             _description = description;
@@ -34,6 +46,7 @@ namespace Data.Store
             _type = type;
             _stats = stats;
             _minLevel = minLevel;
+            _isDefault = isDefault;
         }
 
         public int Id { get => _id; set => _id = value; }
@@ -43,6 +56,7 @@ namespace Data.Store
         public EquipmentTypeEnum Type { get => _type; set => _type = value; }
         public virtual List<PowerStat> Stats { get => _stats; set => _stats = value; }
         public int MinLevel { get => _minLevel; set => _minLevel = value; }
+        public bool IsDefault { get => _isDefault; set => _isDefault = value; }
 
         public void DisplaySelf()
         {

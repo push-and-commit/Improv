@@ -1,7 +1,5 @@
 ﻿using Data;
-using Data.Store;
-using Data.People;
-using GameEditor;
+using Data.Methods;
 using Improv.Methods;
 
 namespace Improv
@@ -12,6 +10,7 @@ namespace Improv
         {
             using (ConnectDB context = new ConnectDB())
             {
+                LoadDatabase.checkIfDbIsLoaded(context);
                 Game.StartGame(context);
             }
         }

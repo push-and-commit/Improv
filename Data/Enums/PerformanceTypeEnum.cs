@@ -8,9 +8,9 @@ namespace Data.Enums
 {
     public enum PerformanceTypeEnum
     {
-        Match,
+        Solo,
         Catch,
         LongForm,
-        Solo
+        Match
     }
 }

@@ -11,10 +11,11 @@ using Data.Store;
 using Data.Values;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Collections;
 
 namespace Data.People
 {
-    public class Team : Impro, IDisplay
+    public class Team : Impro, IDisplay, ILevel
     {
         [Key]
         private int _id;
@@ -25,8 +26,18 @@ namespace Data.People
         private int _money;
         private List<Player> _players;
         private TeamTypeEnum _type;
-
         public Team() { }
+
+        public Team(Impro impro, string slogan, int money, TrainingRoom trainingRoom, TeamTypeEnum type) : base(impro.Name, impro.Level, impro.Equipments, impro.Stats, impro.Inventory)
+        {
+            _slogan = slogan;
+            _money = money;
+            _trainingRoom = trainingRoom;
+            _players = new List<Player>();
+            _type = type;
+
+            _trainingRoomId = trainingRoom.Id;
+        }
 
         public Team(string name, int level, List<Equipment> equipments, List<PowerStat> stats, Inventory inventory, string slogan, int money, TrainingRoom trainingRoom, TeamTypeEnum type) : base(name, level, equipments, stats, inventory)
         {
@@ -35,7 +46,6 @@ namespace Data.People
             _trainingRoom = trainingRoom;
             _players = new List<Player>();
             _type = type;
-            Inventory.NbItemsMax = 15;
 
             _trainingRoomId = trainingRoom.Id;
         }
@@ -52,7 +62,7 @@ namespace Data.People
         {
             Console.WriteLine($"Name : {this.Name}");
             Console.WriteLine($"Level : {this.Level}");
-            if (this.Equipments.Count > 0)
+            if (this.Equipments != null)
             {
                 Console.WriteLine("Equipments :");
                 foreach (Equipment equipment in this.Equipments)
@@ -73,11 +83,24 @@ namespace Data.People
             this.Inventory.DisplaySelf();
             Console.WriteLine($"Moto : {this.Slogan}");
             Console.WriteLine($"Improv Coins : {this.Money}");
-            Console.WriteLine($"Training Room :");
-            this.TrainingRoom.DisplaySelf();
+            Console.WriteLine($"Training Room : {this.TrainingRoom.Name}");
 
             string type = _type == TeamTypeEnum.Player ? "a human" : "the computer";
             Console.WriteLine($"This team is played by {type}");
+        }
+
+        public void LevelUp()
+        {
+            Console.WriteLine($"{this.Name} levels up !");
+            Level++;
+            Experience -= ExperienceToLevelUp;
+            ExperienceToLevelUp = ExperienceToLevelUp + Convert.ToInt32(Math.Floor(ExperienceToLevelUp * 0.75));
+            foreach (PowerStat stat in this.Stats)
+            {
+                Console.WriteLine($"{stat.Stat.Name} : {stat.Power} -> {stat.Power++}");
+                stat.Power++;
+            }
+            Inventory.NbItemsMax++;
         }
 
         public void RecruitPlayer(Player player)

@@ -89,7 +89,7 @@ namespace Data.Methods
                     break;
                 case "Team":
                     Console.WriteLine($"0 - {TeamTypeEnum.Player}");
-                    Console.WriteLine($"1 - {TeamTypeEnum.Robot}");
+                    Console.WriteLine($"1 - {TeamTypeEnum.Computer}");
                     userInput = AskForUserInputInt(message, 0, 1);
                     break;
                 case "Performance":

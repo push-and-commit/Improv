@@ -1,6 +1,6 @@
 ﻿using Data;
-using Data.People;
-using Data.Store;
+using Data.Methods;
+using GameEditor.Methods;
 
 namespace GameEditor
 {
@@ -10,7 +10,7 @@ namespace GameEditor
         {
             using (ConnectDB context = new ConnectDB())
             {
-                Methods.General.LoadDB(context);
+                LoadDatabase.checkIfDbIsLoaded(context);
                 Methods.General.Game(context);
             }
         }

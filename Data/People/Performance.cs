@@ -24,7 +24,7 @@ namespace Data.People
         private int _prizeId;
         [ForeignKey("PrizeId")]
         private Prize _prize;
-        private List<Equipment> _equipmentNeeded;
+        private List<Equipment>? _equipmentNeeded;
 
         public Performance() { }
 
@@ -49,7 +49,7 @@ namespace Data.People
         public virtual PerformanceTypeEnum Type { get => _type; set => _type = value; }
         public virtual int PrizeId { get => _prizeId; set => _prizeId = value; }
         public virtual Prize Prize { get => _prize; set => _prize = value; }
-        public virtual List<Equipment> EquipmentNeeded { get => _equipmentNeeded; set => _equipmentNeeded = value; }
+        public virtual List<Equipment>? EquipmentNeeded { get => _equipmentNeeded; set => _equipmentNeeded = value; }
 
         public void DisplaySelf()
         {

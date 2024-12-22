@@ -15,7 +15,7 @@ namespace Data.Store
     {
         [Key]
         private int _id;
-        private List<Equipment> _equipments;
+        private List<Equipment>? _equipments;
         private int _nbItemsMax;
 
         public Inventory(int nbItemsMax)
@@ -25,7 +25,7 @@ namespace Data.Store
         }
 
         public int Id { get => _id; set => _id = value; }
-        public virtual List<Equipment> Equipments { get => _equipments; set => _equipments = value; }
+        public virtual List<Equipment>? Equipments { get => _equipments; set => _equipments = value; }
         public int NbItemsMax { get => _nbItemsMax; set => _nbItemsMax = value; }
 
         public void DisplaySelf()

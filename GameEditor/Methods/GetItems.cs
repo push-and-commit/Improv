@@ -52,7 +52,7 @@ namespace GameEditor.Methods
             return playerList;
         }
 
-        public static Team PlayerByName(string name)
+        public static Team TeamByName(string name)
         {
             using (ConnectDB context = new ConnectDB())
             {

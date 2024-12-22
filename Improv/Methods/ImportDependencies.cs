@@ -76,12 +76,12 @@ namespace Improv.Methods
             context.teams
                 .Include(dbTeam => dbTeam.Inventory)
                 .FirstOrDefault(dbTeam => dbTeam.InventoryId == team.InventoryId); // Link inventory to team
-            context.inventories
+            Inventory inventory = context.inventories
                 .Include(dbInventory => dbInventory.Equipments)
                 .FirstOrDefault(dbInventory => dbInventory.Id == team.InventoryId); // Link equipments to Inventory
-            if (team.Inventory.Equipments.Count > 0)
+            if (inventory.Equipments.Count > 0)
             {
-                foreach (Equipment equipment in team.Inventory.Equipments)
+                foreach (Equipment equipment in inventory.Equipments)
                 {
                     context.equipments
                         .Include(dbEquipment => dbEquipment.Stats)
@@ -92,10 +92,11 @@ namespace Improv.Methods
 
         private static void ImportTeamEquipmentsDependencies(Team team, ConnectDB context)
         {
-            // Import equipments and dependencies
+            /*// Import equipments and dependencies
             context.teams
                 .Include(dbTeam => dbTeam.Equipments)
-                .FirstOrDefault(dbTeam => dbTeam.Id == team.Id); // Link equipments to team
+                .FirstOrDefault(dbTeam => dbTeam.Id == team.Id); // Link equipments to team*/
+            context.Entry(team).Collection(t => t.Equipments).Load();
             foreach (Equipment equipment in team.Equipments)
             {
                 ImportEquipmentStatsDependencies(equipment, context); // Link stat to equipment. Impossible to do without foreach if a list is used
@@ -110,18 +111,25 @@ namespace Improv.Methods
                 .FirstOrDefault(dbTeam => dbTeam.Id == team.Id); // Link stats to team
         }
 
-        private static void ImportTeamTrainingRoomDependencies(Team team, ConnectDB context)
+        public static void ImportTeamTrainingRoomDependencies(Team team, ConnectDB context)
         {
             // Import training room and dependencies
             context.teams
                 .Include(dbTeam => dbTeam.TrainingRoom)
                 .FirstOrDefault(dbTeam => dbTeam.TrainingRoomId == team.TrainingRoomId); // Link Training room to team
-            context.trainingRooms
+            TrainingRoom vTrainingRoom = context.trainingRooms
                 .Include(dbTrainingRoom => dbTrainingRoom.Stats)
                 .FirstOrDefault(dbTrainingRoom => dbTrainingRoom.Id == team.TrainingRoomId); // Link stats to training room
-            context.shops
+            foreach(PowerStat powserStat in vTrainingRoom.Stats)
+            {
+                context.powerStats
+                    .Include(dbPowerStat => dbPowerStat.Stat)
+                    .FirstOrDefault(dbPowerStat => dbPowerStat.StatId == powserStat.StatId);
+            }
+            context.Entry(vTrainingRoom).Reference(tr => tr.Shop).Load();
+            /*context.shops
                 .Include(dbShop => dbShop.Equipments)
-                .FirstOrDefault(dbShop => dbShop.Id == team.TrainingRoom.ShopId); // Link shop to training room
+                .FirstOrDefault(dbShop => dbShop.Id == team.TrainingRoom.ShopId);*/ // Link shop to training room
         }
 
         /****************
@@ -248,8 +256,8 @@ namespace Improv.Methods
         public static void ImportEquipmentStatsDependencies(Equipment equipment, ConnectDB context)
         {
             context.equipments
-                    .Include(dbEquipments => dbEquipments.Stats)
-                    .FirstOrDefault(dbEquipment => dbEquipment.Id == equipment.Id);
+                .Include(dbEquipments => dbEquipments.Stats)
+                .FirstOrDefault(dbEquipment => dbEquipment.Id == equipment.Id);
         }
     }
 }

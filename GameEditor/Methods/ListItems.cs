@@ -411,10 +411,11 @@ namespace GameEditor.Methods
             int cpt = 1;
             foreach(Equipment equipment in context.equipments)
             {
-                if (equipment.Type.ToString() == equipmentType)
+                if (equipment.IsDefault && equipment.Type.ToString() == equipmentType)
                 {
                     equipmentList.Add(cpt, equipment);
                     Console.WriteLine($"{cpt} - {equipment.Name} | {equipment.Price} Improv Coins");
+                    cpt++;
                 }
             }
             return equipmentList;

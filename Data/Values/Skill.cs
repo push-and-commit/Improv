@@ -1,4 +1,5 @@
-﻿using Data.Enums;
+﻿using Data.People;
+using Data.Enums;
 using Data.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -19,6 +20,7 @@ namespace Data.Values
         private SkillTypeEnum _type;
         private int _power;
         private List<CostStat> _cost;
+        private List<Player> _players;
 
         public Skill() { }
 
@@ -29,6 +31,7 @@ namespace Data.Values
             _type = type;
             _power = power;
             _cost = cost;
+            _players = new List<Player>();
         }
 
         public int Id { get => _id; set => _id = value; }
@@ -37,6 +40,7 @@ namespace Data.Values
         public SkillTypeEnum Type { get => _type; set => _type = value; }
         public int Power { get => _power; set => _power = value; }
         public virtual List<CostStat> Cost { get => _cost; set => _cost = value; }
+        public virtual List<Player> Players { get => _players; set => _players = value; }
 
         public void DisplaySelf()
         {

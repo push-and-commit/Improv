@@ -11,14 +11,14 @@ using Data.Interfaces;
 
 namespace Data.People
 {
-    public class Impro : ILevel
+    public class Impro
     {
         [Key]
         private int _id;
         private string _name;
         private int _level;
         private int _experience;
-        private int _exeprienceToLevelUp;
+        private int _experienceToLevelUp;
         private List<Equipment> _equipments;
         private List<PowerStat> _stats;
         private int _inventoryId;
@@ -32,7 +32,7 @@ namespace Data.People
             _name = name;
             _level = level;
             _experience = 0;
-            _exeprienceToLevelUp = 100 + (level * 10 + 30);
+            _experienceToLevelUp = 100 + (level * 10 + 30);
             _equipments = equipments;
             _stats = stats;
             _inventory = inventory;
@@ -44,21 +44,11 @@ namespace Data.People
         public string Name { get => _name; set => _name = value; }
         public int Level { get => _level; set => _level = value; }
         public int Experience { get => _experience; set => _experience = value; }
-        public int ExeprienceToLevelUp { get => _exeprienceToLevelUp; set => _exeprienceToLevelUp = value; }
+        public int ExperienceToLevelUp { get => _experienceToLevelUp; set => _experienceToLevelUp = value; }
         public virtual List<Equipment> Equipments { get => _equipments; set => _equipments = value; }
         public virtual List<PowerStat> Stats { get => _stats; set => _stats = value; }
         public virtual int InventoryId { get => _inventoryId; set => _inventoryId = value; }
         public virtual Inventory Inventory { get => _inventory; set => _inventory = value; }
-
-        public void LevelUp()
-        {
-            Level++;
-            foreach (PowerStat stat in this.Stats)
-            {
-                stat.Power++;
-            }
-            Inventory.NbItemsMax++;
-        }
 
         public void AddEquipment(Equipment equipment)
         {
@@ -68,20 +58,6 @@ namespace Data.People
         public void RemoveEquipment(Equipment equipment)
         {
             Equipments.Remove(equipment);
-        }
-
-        public void ChangeEquipment(Equipment equipment)
-        {
-            bool isTypeAlreadyEquipped = false;
-            foreach (Equipment equip in Equipments)
-            {
-                if (equipment.Type == equip.Type)
-                {
-                    isTypeAlreadyEquipped = true;
-                    RemoveEquipment(equip);
-                }
-            }
-            AddEquipment(equipment);
         }
     }
 }

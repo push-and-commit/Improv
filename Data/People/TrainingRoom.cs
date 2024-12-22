@@ -54,8 +54,15 @@ namespace Data.People
             {
                 Console.WriteLine($"{stat.Power} points of {stat.Stat.Name} ");
             }
-            Console.WriteLine("Shop :");
-            this._shop.DisplaySelf();
+            Console.WriteLine($"Shop name : {this._shop.Name}");
+        }
+
+        public void DisplayNextLevelStats()
+        {
+            foreach (PowerStat stat in _stats)
+            {
+                Console.WriteLine($"{stat.Stat.Name} : {stat.Power} -> {stat.Power + 5}");
+            }
         }
 
         public void LevelUp()
@@ -63,7 +70,7 @@ namespace Data.People
             _level++;
             foreach (PowerStat stat in _stats)
             {
-                stat.Power++;
+                stat.Power += 5;
             }
         }
     }

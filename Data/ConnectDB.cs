@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Data.People;
 using Data.Store;
 using Data.Values;
+using Data.Enums;
 
 namespace Data
 {
@@ -25,80 +26,109 @@ namespace Data
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         => options.UseSqlite($"Data Source ={dbPath}")
-            .UseLazyLoadingProxies();
+            .UseLazyLoadingProxies()
+            .EnableSensitiveDataLogging();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
-        { // Ensure that Primary and Foreign keys are well created and well respected
+        { // Ensure that Primary and Foreign keys are well created and well respected. This override was made with the help of ChatGPT
             // Relation Player - Team
             modelBuilder.Entity<Player>()
                 .HasOne(p => p.Team)
                 .WithMany(t => t.Players)
-                .HasForeignKey(p => p.TeamId);
+                .HasForeignKey(p => p.TeamId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             // Relation Team - TrainingRoom
             modelBuilder.Entity<Team>()
                 .HasOne(t => t.TrainingRoom)
                 .WithOne()
-                .HasForeignKey<Team>(t => t.TrainingRoomId);
+                .HasForeignKey<Team>(t => t.TrainingRoomId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             // Relation TrainingRoom - Shop
             modelBuilder.Entity<TrainingRoom>()
                 .HasOne(t => t.Shop)
                 .WithOne()
-                .HasForeignKey<TrainingRoom>(t => t.ShopId);
+                .HasForeignKey<TrainingRoom>(t => t.ShopId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             // Relation Shop - Equipments
             modelBuilder.Entity<Shop>()
                 .HasMany(s => s.Equipments)
-                .WithOne();
+                .WithOne()
+                .OnDelete(DeleteBehavior.Restrict);
 
             // Relation Inventory - Equipments
             modelBuilder.Entity<Inventory>()
                 .HasMany(i => i.Equipments)
-                .WithOne();
+                .WithOne()
+                .OnDelete(DeleteBehavior.Restrict);
 
             // Relation Impro - Inventory
             modelBuilder.Entity<Impro>()
                 .HasOne(i => i.Inventory)
                 .WithOne()
-                .HasForeignKey<Impro>(i => i.InventoryId);
+                .HasForeignKey<Impro>(i => i.InventoryId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             // Relation Performance - Prize
             modelBuilder.Entity<Performance>()
                 .HasOne(p => p.Prize)
                 .WithOne()
-                .HasForeignKey<Performance>(p => p.PrizeId);
+                .HasForeignKey<Performance>(p => p.PrizeId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             // Relation Performance - Equipments Needed
             modelBuilder.Entity<Performance>()
                 .HasMany(p => p.EquipmentNeeded)
-                .WithOne();
+                .WithOne()
+                .OnDelete(DeleteBehavior.Cascade);
 
             // Relation Audience - Prize
             modelBuilder.Entity<Audience>()
                 .HasOne(a => a.Prize)
                 .WithOne()
-                .HasForeignKey<Audience>(a => a.PrizeId);
+                .HasForeignKey<Audience>(a => a.PrizeId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             // Relation Audience - Skills
             modelBuilder.Entity<Audience>()
                 .HasMany(a => a.Skills)
-                .WithOne();
+                .WithOne()
+                .OnDelete(DeleteBehavior.Restrict);
 
             // Relation Skill - CostStat
             modelBuilder.Entity<Skill>()
                 .HasMany(s => s.Cost)
-                .WithOne();
+                .WithOne()
+                .OnDelete(DeleteBehavior.Cascade);
 
             // Relation PowerStat - Stat
             modelBuilder.Entity<PowerStat>()
                 .HasOne(ps => ps.Stat)
-                .WithMany();
+                .WithMany()
+                .OnDelete(DeleteBehavior.Restrict);
 
             // Relation CostStat - Stat
             modelBuilder.Entity<CostStat>()
                 .HasOne(cs => cs.Stat)
-                .WithMany();
+                .WithMany()
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // Relation Player - Skill
+            modelBuilder.Entity<Player>()
+                .HasMany(p => p.Skills)
+                .WithMany(s => s.Players)
+                .UsingEntity<Dictionary<string, object>>(
+                    "PlayerSkill", // Name of the join table
+                    j => j.HasOne<Skill>()
+                          .WithMany()
+                          .HasForeignKey("SkillId") // Foreign Key to Skill
+                          .OnDelete(DeleteBehavior.Cascade),
+                    j => j.HasOne<Player>()
+                          .WithMany()
+                          .HasForeignKey("PlayerId") // Foreign Key to Player
+                          .OnDelete(DeleteBehavior.Cascade));
         }
 
         public DbSet<Equipment> equipments { get; set; }

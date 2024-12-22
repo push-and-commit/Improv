@@ -239,7 +239,7 @@ namespace GameEditor.Methods
                 int cpt = 1;
                 foreach (Team team in context.teams)
                 {
-                    if (team.Type == TeamTypeEnum.Player)
+                    if (team.Type == TeamTypeEnum.Player && team.Name != "Default")
                     {
                         games.Add(cpt, team);
                         cpt++;
@@ -253,7 +253,6 @@ namespace GameEditor.Methods
         public static Team LoadGame(string name, ConnectDB context)
         {
             Team userTeam = null;
-            // Connect to database
             foreach (Team team in context.teams)
             {
                 if (team.Name == name)
@@ -395,124 +394,6 @@ namespace GameEditor.Methods
             } while (skillList.Count != skills.Count && userInput != 0);
 
             return skillList;
-        }
-
-        public static void LoadDB(ConnectDB context)
-        {
-            // 1. Création des Stats
-            Stat solidarity = new Stat("Solidarity", "Team cohesion", StatTypeEnum.Team);
-            Stat fatigue = new Stat("Fatigue", "Player's fatigue", StatTypeEnum.Player);
-            Stat nbPlayers = new Stat("Number of Players", "Training room capacity", StatTypeEnum.TrainingRoom);
-            context.stats.Add(solidarity);
-            context.stats.Add(fatigue);
-            context.stats.Add(nbPlayers);
-            context.SaveChanges();
-
-            solidarity = context.stats.FirstOrDefault(stat => stat.Name == "Solidarity");
-            fatigue = context.stats.FirstOrDefault(stat => stat.Name == "Fatigue");
-            nbPlayers = context.stats.FirstOrDefault(stat => stat.Name == "Number of Players");
-
-            // 2. Création des PowerStats
-            PowerStat teamSolidarity = new PowerStat(solidarity, "TeamStat", "Team", 25);
-            PowerStat playerFatigue = new PowerStat(fatigue, "PlayerStat", "Player", 15);
-            PowerStat trainingRoomCapacity = new PowerStat(nbPlayers, "TrainingRoom", "TrainingRoom", 15);
-            context.powerStats.Add(teamSolidarity);
-            context.powerStats.Add(playerFatigue);
-            context.powerStats.Add(trainingRoomCapacity);
-            context.SaveChanges();
-
-            teamSolidarity = context.powerStats.FirstOrDefault(powerStat => powerStat.Stat.Name == "Solidarity");
-            playerFatigue = context.powerStats.FirstOrDefault(powerStat => powerStat.Stat.Name == "Fatigue");
-            trainingRoomCapacity = context.powerStats.FirstOrDefault(powerStat => powerStat.Stat.Name == "Number of Players");
-
-            // 3. Création des Prizes
-            Prize performancePrize = new Prize(200, 150);
-            context.prizes.Add(performancePrize);
-            context.SaveChanges();
-
-            performancePrize = context.prizes.FirstOrDefault(prize => prize.Money == 200 && prize.Experience == 150);
-
-            // 4. Création des Skills
-            CostStat costPunchline = new CostStat(fatigue, 1, "Punchline", SkillTypeEnum.Player);
-            context.costStats.Add(costPunchline);
-            context.SaveChanges();
-            costPunchline = context.costStats.FirstOrDefault(costStat => costStat.Stat.Name == "Fatigue");
-            List<CostStat> playerCostStatList = new List<CostStat> { costPunchline };
-            List<CostStat> robotCostStatList = new List<CostStat>();
-            Skill punchline = new Skill("Punchline", "A joke that triggers laughter", SkillTypeEnum.Player, 10, playerCostStatList);
-            context.skills.Add(punchline);
-            context.SaveChanges();
-            punchline = context.skills.FirstOrDefault(skill => skill.Name == "Punchline");
-            Skill applause = new Skill("Applause", "Crowd applauding that causes confidence boost", SkillTypeEnum.Audience, 10, robotCostStatList);
-            context.skills.Add(applause);
-            context.SaveChanges();
-            applause = context.skills.FirstOrDefault(skill => skill.Name == "Applause");
-
-            // 5. Création des Equipments
-            List<PowerStat> EquipmentPowerStatList = new List<PowerStat> { playerFatigue };
-            Equipment vest = new Equipment("Vest", "Player's uniform", 0, EquipmentTypeEnum.Player, EquipmentPowerStatList, 1);
-            context.equipments.Add(vest);
-            context.SaveChanges();
-            vest = context.equipments.FirstOrDefault(equipment => equipment.Name == "Vest");
-
-            // 6. Création du Shop
-            List<Equipment> equipmentList = new List<Equipment> { vest };
-            Shop teamShop = new Shop("Improv Shop", "A shop for all improv needs", equipmentList);
-            context.shops.Add(teamShop);
-            context.SaveChanges();
-            teamShop = context.shops.FirstOrDefault(shop => shop.Name == "Improv Shop");
-
-            // 7. Création de l'Inventory
-            Inventory teamInventory = new Inventory(4);
-            teamInventory.Equipments = equipmentList;
-            Inventory playerInventory = new Inventory(5);
-            playerInventory.Equipments = equipmentList;
-            context.inventories.Add(teamInventory);
-            context.inventories.Add(playerInventory);
-            context.SaveChanges();
-
-            teamInventory = context.inventories.FirstOrDefault(inventory => inventory.NbItemsMax == 4);
-            playerInventory = context.inventories.FirstOrDefault(inventory => inventory.NbItemsMax == 5);
-
-            // 8. Création de la TrainingRoom
-            List<PowerStat> trainingRoomPowerStatList = new List<PowerStat> { trainingRoomCapacity };
-            TrainingRoom trainingRoom = new TrainingRoom("Basic Training Room", "A place to train your team", 1, trainingRoomPowerStatList, teamShop);
-            context.trainingRooms.Add(trainingRoom);
-            context.SaveChanges();
-            trainingRoom = context.trainingRooms.FirstOrDefault(trainingRomm => trainingRoom.Name == "Basic Training Room");
-
-            // 9. Création de l'Équipe
-            List<PowerStat> teamPowerStatList = new List<PowerStat> { teamSolidarity };
-            List<Player> playerList = new List<Player>();
-            Team improvTeam = new Team("Improv Team", 1, equipmentList, teamPowerStatList, teamInventory, "Improvise and conquer!", 1500, trainingRoom, TeamTypeEnum.Player);
-            context.teams.Add(improvTeam);
-            context.SaveChanges();
-            improvTeam = context.teams.FirstOrDefault(team => team.Name == "Improv Team");
-
-            // 10. Création du Player
-            List<Skill> playerSkillList = new List<Skill> { punchline };
-            List<PowerStat> playerPowerStatList = new List<PowerStat> { playerFatigue };
-            Player player = new Player("Oliver", 1, equipmentList, playerPowerStatList, playerInventory, 20, improvTeam, PlayerTypeEnum.Starter, true);
-            player.Skills = playerSkillList;
-            context.players.Add(player);
-            context.SaveChanges();
-            player = context.players.FirstOrDefault(player => player.Name == "Oliver");
-
-            // 11. Création de l'Audience
-            List<Skill> audienceSkillList = new List<Skill> { applause };
-            Audience parisAudience = new Audience("Paris Audience", "The largest audience in France", 1, 50, performancePrize, audienceSkillList);
-            context.audiences.Add(parisAudience);
-            context.SaveChanges();
-            parisAudience = context.audiences.FirstOrDefault(audience => audience.Name == "Paris Audience");
-
-            // 12. Création de la Performance
-            List<Equipment> performanceEquipmentList = new List<Equipment> { vest };
-            Performance improvPerformance = new Performance("Opening Night", "An exciting performance for all improv lovers", 5, 3, PerformanceTypeEnum.Match, performancePrize, performanceEquipmentList);
-            context.performances.Add(improvPerformance);
-            context.SaveChanges();
-            improvPerformance = context.performances.FirstOrDefault(performance => performance.Name == "Opening Night");
-
-            Console.WriteLine("Database successfully initialized.");
         }
     }
 }

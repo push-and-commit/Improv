@@ -10,8 +10,8 @@ solidarity
 trainingRoomCapacity
 
 Player :
-exhaustion
-attitude
+fatigue
+behavior
 selfTrust
 solidarityThreshold
 
